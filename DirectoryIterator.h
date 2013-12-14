@@ -1,6 +1,7 @@
 #ifndef DirectoryIterator_12142013
 #define DirectoryIterator_12142013
 #include <iterator>
+#include <stack>
 #include "Directory.h"
 
 /*
@@ -14,13 +15,15 @@ http://www.oreillynet.com/pub/a/network/2005/10/18/what-is-iterator-in-c-plus-pl
 http://www.oreillynet.com/pub/a/network/2005/11/21/what-is-iterator-in-c-plus-plus-part2.html
  */
 
-class DirectoryIterator : public std::iterator<std::input_iterator_tag, Directory> { 
+class DirectoryIterator : public std::iterator<std::input_iterator_tag, Node> { 
+
+  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iter_stack;
 
  public:
     DirectoryIterator(const Directory& dir);
 
-    Directory& operator*() const;
-    Directory* operator->() const;
+    Node& operator*() const;
+    Node* operator->() const;
 
     DirectoryIterator& operator++();
     DirectoryIterator operator++(int);
@@ -33,7 +36,6 @@ class DirectoryIterator : public std::iterator<std::input_iterator_tag, Director
     // one way conversion: iterator -> const_iterator
     operator IntrusiveSlistIterator<T const, Tag>() const;
     */ 
-
  
 };
 #endif
