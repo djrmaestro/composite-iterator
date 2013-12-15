@@ -41,8 +41,8 @@ void Directory::Descend(Directory *pdir, string path) const
          }   
     }
 }
-
-void Directory::DescendNoStack_new() //const
+/*
+void Directory::DescendNoStack() //const
 {
   string path = "./";
   
@@ -83,3 +83,4 @@ void Directory::DescendNoStack_new() //const
      }
   } 
 }
+*/

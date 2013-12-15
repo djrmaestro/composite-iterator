@@ -1,10 +1,13 @@
 #ifndef Directory_H_121223013
 #define  Directory_H_121223013
 #include <iosfwd>
+#include <iostream> // temporarily
 #include <list>
 #include <string>
-
+#include <stack>
 #include "Node.h"
+
+class DirectoryIterator;
 
 class Directory : public Node {
 
@@ -13,9 +16,14 @@ class Directory : public Node {
     std::string name;
     std::string date_created;
 
+    /*
+     * Note: To make these functions template member functions, include the definition also in this header file.
+     */
     void Descend(Directory *p, std::string path) const;
-    void DescendNoStack(); //const; 
-     void DescendNoStack_new(); //const; 
+    
+    template<typename F> void DescendNoStack(F); //const; 
+
+    friend class DirectoryIterator;
 
     public:   
       
@@ -55,15 +63,57 @@ class Directory : public Node {
     
     virtual void print(std::ostream&) const;
 
-    void traverse(); //--const;
+    template<typename F> void traverse(F); //--const;
         
     ~Directory();
       
 };
-
-inline void Directory::traverse() //--const
+ 
+template<typename F> inline void Directory::traverse(F f) //--const
 {
     //Descend(this, std::string("./"));
-    DescendNoStack_new();
+    DescendNoStack(f);
+}
+//TODO: f is not used yet, sya, to print
+template<typename F> void Directory::DescendNoStack(F f) //const
+{
+  std::string path = "./";
+  
+  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iter_stack;
+  
+  iter_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
+
+  while(!iter_stack.empty()) {
+      
+     std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator >  top = iter_stack.top(); 
+     iter_stack.pop();
+     
+     std::list<Node *>::iterator iter     = top.first; 
+     std::list<Node *>::iterator iter_end = top.second; 
+ 
+    //string dir_name = pdir->getName();
+     std::string dir_name = (*iter)->getName();
+                
+     path += dir_name + std::string("/");
+        
+     std::cout << path << "\n";
+
+     for (;iter != iter_end; iter++) {
+
+        Node *pNode = *iter;
+      
+        if (dynamic_cast<Directory *>(pNode)) {
+
+            // If Directory, push it onto stack
+            Directory *pDir = static_cast<Directory *>(pNode);
+            
+            iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            
+        } else { // output file name preceeded by path
+          
+            std::cout << path << *pNode << std::endl; 
+        }   
+     }
+  } 
 }
 #endif
