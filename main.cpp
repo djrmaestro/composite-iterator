@@ -9,7 +9,7 @@
 #include <string>
 #include "File.h"
 #include "Directory.h"
-#include "DirectoryIterator.h"
+//--#include "DirectoryIterator.h"
 #include <iostream>
 
 using namespace std;
@@ -56,8 +56,8 @@ int main(int argc, char** argv)
         top.add(psubdir1);
         
         //top.traverse(does_nothing);
-        DirectoryIterator x(top);
-        DirectoryIterator y(top);
+        Directory::iterator x(top);
+        Directory::iterator y(top);
           
     
     } catch (Node::UnsupportedOperationException& e) {
