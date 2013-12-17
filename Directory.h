@@ -37,7 +37,8 @@ class Directory : public Node {
         
         public:
                 
-          DirectoryIterator(Directory & dir); // use for end()
+          DirectoryIterator(); // use for end();
+          DirectoryIterator(Directory & dir); 
           Node *operator*() const; //  modeled after list::iterator::operator*() const
           
           DirectoryIterator operator++();

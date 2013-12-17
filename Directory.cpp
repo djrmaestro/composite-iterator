@@ -10,6 +10,11 @@ Directory::iterator Directory::begin()
     return x;
 }
 
+Directory::iterator Directory::end()
+{
+    return DirectoryIterator(); 
+}
+
 Directory::~Directory()
 {
  /*
@@ -22,7 +27,7 @@ Directory::~Directory()
   for (;iter != iter_end; iter++) { 
      // delete Node from memory
      Node *pNode = *iter; 
-     delete pNode;
+     delete pNode; // will invoke virtual dtor
   }   
 }
 
@@ -64,10 +69,14 @@ Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
   iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
+Directory::DirectoryIterator::DirectoryIterator() : iter_stack() 
+{
+}
+
 
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
-  return true;
+    return true;
 }
 
 Node *Directory::DirectoryIterator::operator *() const
@@ -83,7 +92,6 @@ Directory::iterator  Directory::DirectoryIterator::operator++()
 {
   if (!iter_stack.empty()) {
       
-
 //     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iter_stack.top(); 
 //     iter_stack.pop();
     
@@ -115,7 +123,6 @@ Directory::iterator  Directory::DirectoryIterator::operator++()
      // stack is empty and there is nothing to return
   }
 }
-
 
 Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
 {
