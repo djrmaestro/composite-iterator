@@ -1,13 +1,30 @@
 #include "Directory.h"
+#include "DirectoryIterator.h"
 #include <stack>
 #include <iostream>
 
 using namespace std;
 
+DirectoryIterator Directory::begin()
+{
+    DirectoryIterator x(*this); 
+    return x;
+}
+
 Directory::~Directory()
 {
-  //TODO: traverse and delete children
-    
+ /*
+    traverse and delete children
+    Take advantage of the Node destructor being virtual, which will allow recursion to be used.
+   */
+  list<Node*>::iterator iter     = fileComponents.begin();
+  list<Node*>::iterator iter_end = fileComponents.end();
+
+  for (;iter != iter_end; iter++) { 
+     // delete Node from memory
+     Node *pNode = *iter; 
+     delete pNode;
+  }   
 }
 
 void Directory::print(ostream& ostr) const
@@ -41,7 +58,7 @@ void Directory::Descend(Directory *pdir, string path) const
          }   
     }
 }
-/*
+/* This is now a template method define in the header file
 void Directory::DescendNoStack() //const
 {
   string path = "./";

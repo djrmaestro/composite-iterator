@@ -1,21 +1,21 @@
 #include "DirectoryIterator.h"
-#include <stack>
-#include <iostream>
+#include "Directory.h"
 
 using namespace std;
 
-DirectoryIterator::~DirectoryIterator()
-{
-  //TODO: traverse and delete children
-    
-}
 
-DirectoryIterator::DirectoryIterator(const Directory& dir)
+DirectoryIterator::DirectoryIterator(Directory& dir)
 {
   iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
-Node *Directory::operator *() //const
+
+bool DirectoryIterator::operator==(const DirectoryIterator& rhs) const
+{
+  return true;
+}
+
+Node *DirectoryIterator::operator *() const
 {
   if (!iter_stack.empty()) {
 
@@ -24,24 +24,30 @@ Node *Directory::operator *() //const
   } 
 }
 
-DirectoryIterator  DirectoryIterator::operator++() //const
+DirectoryIterator  DirectoryIterator::operator++() 
 {
   if (!iter_stack.empty()) {
       
-     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iter_stack.top(); 
-     iter_stack.pop();
-     
-     list<Node *>::iterator iter     = top.first; 
-     list<Node *>::iterator iter_end = top.second; 
+
+//     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iter_stack.top(); 
+//     iter_stack.pop();
+    
+//     list<Node *>::iterator iter     = top.first; 
+//     list<Node *>::iterator iter_end = top.second; 
  
-     if (iter != iter_end ) { 
+
+     list<Node *>::iterator iter     = iter_stack.top().first; 
+     list<Node *>::iterator iter_end = iter_stack.top().second; 
+     iter_stack.pop();
+
+     if (iter != iter_end) { 
 
         iter++;
 
         if (dynamic_cast<Directory *>(*iter)) {
 
             // If Directory, push it onto stack
-            Directory *pDir = static_cast<Directory *>(pNode);
+            Directory *pDir = static_cast<Directory *>(*iter);
             
             iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
         }  
@@ -54,6 +60,18 @@ DirectoryIterator  DirectoryIterator::operator++() //const
      // stack is empty and there is nothing to return
   }
 }
+
+
+DirectoryIterator  DirectoryIterator::operator++(int) //postfix
+{
+   DirectoryIterator temp(*this);
+   
+   ++*this;
+   
+   return temp;
+}
+
+/*
 void Directory::DescendNoStack() //const
 {
   string path = "./";
@@ -95,3 +113,4 @@ void Directory::DescendNoStack() //const
      }
   } 
 }
+*/

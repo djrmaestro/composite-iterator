@@ -1,4 +1,4 @@
-#ifndef Directory_H_121223013
+#ifndef  Directory_H_121223013
 #define  Directory_H_121223013
 #include <iosfwd>
 #include <iostream> // temporarily
@@ -6,6 +6,7 @@
 #include <string>
 #include <stack>
 #include "Node.h"
+#include "DirectoryIterator.h"
 
 class DirectoryIterator;
 
@@ -26,6 +27,8 @@ class Directory : public Node {
     friend class DirectoryIterator;
 
     public:   
+        
+    DirectoryIterator begin();
       
     Directory(const std::string& name, const std::string& date_created)
     {
@@ -116,4 +119,5 @@ template<typename F> void Directory::DescendNoStack(F f) //const
      }
   } 
 }
+
 #endif
