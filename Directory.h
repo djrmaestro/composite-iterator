@@ -34,19 +34,22 @@ class Directory : public Node {
            /* for const_iterator behavoir, we need:
            std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
            */
-        
         public:
                 
-          DirectoryIterator(); // use for end();
           DirectoryIterator(Directory & dir); 
-          Node *operator*() const; //  modeled after list::iterator::operator*() const
+
+          // Required forward iterator methods follow
+          DirectoryIterator();                          
+          DirectoryIterator(const Directory&);
+          Directory& operator=(const DirectoryIterator&); 
+
+          Node *operator*() const; /
           
-          DirectoryIterator operator++();
+          DirectoryIterator& operator++();
           DirectoryIterator operator++(int);
-              
-         /*
-           ???  operator->() const
-         */ 
+         
+          Node *operator->() const
+          
           bool operator==(const DirectoryIterator& x) const;
           bool operator!=(const DirectoryIterator& x) const;
      };

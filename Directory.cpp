@@ -92,13 +92,6 @@ Directory::iterator  Directory::DirectoryIterator::operator++()
 {
   if (!iter_stack.empty()) {
       
-//     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iter_stack.top(); 
-//     iter_stack.pop();
-    
-//     list<Node *>::iterator iter     = top.first; 
-//     list<Node *>::iterator iter_end = top.second; 
- 
-
      list<Node *>::iterator iter     = iter_stack.top().first; 
      list<Node *>::iterator iter_end = iter_stack.top().second; 
      iter_stack.pop();
