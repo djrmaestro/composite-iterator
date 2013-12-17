@@ -69,10 +69,15 @@ Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
   iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
-Directory::DirectoryIterator::DirectoryIterator() : iter_stack() 
-{
-}
 
+Directory::DirectoryIterator::Directory& operator=(const DirectoryIterator& rhs) 
+{
+  if (rhs != this) {
+     iter_stack = rhs.iter_stack;
+  }
+
+  return *this;
+}
 
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
