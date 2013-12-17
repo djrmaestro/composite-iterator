@@ -24,34 +24,35 @@ class Directory : public Node {
     friend class DirectoryIterator;
 
  public:   
-  // nested iterator class
-  class DirectoryIterator : public std::iterator<std::input_iterator_tag, Node *> { 
 
-    friend class Directory;
-    std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iter_stack;
-  
-  /* for const_iterator behavoir, you would need this:
-  std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
-  */
-  
-   public:
-          
-    DirectoryIterator(Directory & dir);
-    Node *operator*() const; //  modeled after list::iterator::operator*() const
-    
-    DirectoryIterator operator++();
-    DirectoryIterator operator++(int);
+     // nested iterator class
+     class DirectoryIterator : public std::iterator<std::input_iterator_tag, Node *> { 
+   
+          friend class Directory;
+          std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iter_stack;
         
-   /*
-     ???  operator->() const
-
-   */ 
-    bool operator==(const DirectoryIterator& x) const;
-    bool operator!=(const DirectoryIterator& x) const;
-  };
+           /* for const_iterator behavoir, we need:
+           std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
+           */
+        
+        public:
+                
+          DirectoryIterator(Directory & dir); // use for end()
+          Node *operator*() const; //  modeled after list::iterator::operator*() const
+          
+          DirectoryIterator operator++();
+          DirectoryIterator operator++(int);
+              
+         /*
+           ???  operator->() const
+         */ 
+          bool operator==(const DirectoryIterator& x) const;
+          bool operator!=(const DirectoryIterator& x) const;
+     };
 
     typedef DirectoryIterator iterator;   
     iterator begin();
+    iterator end();
       
     Directory(const std::string& name, const std::string& date_created)
     {
