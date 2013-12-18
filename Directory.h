@@ -44,8 +44,7 @@ class Directory : public Node {
           // Required forward iterator methods follow
           DirectoryIterator();                          
           DirectoryIterator(const DirectoryIterator&);
-          DirectoryIterator& operator=(const DirectoryIterator&); 
-
+        
           Node *operator*() const; 
           Node **operator->() const; //  std::__addressof(static_cast<_Node*>
           
@@ -73,8 +72,7 @@ class Directory : public Node {
           // Required forward iterator methods follow
           ConstDirectoryIterator();                          
           ConstDirectoryIterator(const ConstDirectoryIterator&);
-          ConstDirectoryIterator& operator=(const ConstDirectoryIterator&);
-
+          
           const Node *operator*() const; 
          
           const Node **operator->() const;

@@ -68,17 +68,6 @@ Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
   iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
-
-Directory::iterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs) 
-{
-  if (this != &rhs) {
-
-     iter_stack = rhs.iter_stack;
-  }
-
-  return *this;
-}
-
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
     return true;
@@ -136,17 +125,6 @@ Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir)
 {
     iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 
-}
-
-// Is this operation even needed or a part of iterator or const_iterator?
-Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs) 
-{
-  if (this != &rhs) {
-
-     iter_stack = rhs.iter_stack; // This gives a compile error?
-  }
-
-  return *this;
 }
 
 bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator& rhs) const
