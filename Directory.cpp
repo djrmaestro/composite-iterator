@@ -69,7 +69,7 @@ Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
 }
 
 
-Directory::iterator& Directory::DirectoryIterator:: operator=(const DirectoryIterator& rhs) 
+Directory::iterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs) 
 {
   if (this != &rhs) {
 
@@ -143,7 +143,7 @@ Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(
 {
   if (this != &rhs) {
 
-     iter_stack = rhs.iter_stack;
+     iter_stack = rhs.iter_stack; // This gives a compile error?
   }
 
   return *this;
@@ -158,7 +158,7 @@ const Node *Directory::ConstDirectoryIterator::operator *() const
 {
   if (!iter_stack.empty()) {
 
-      list<const Node *>::const_iterator iter = iter_stack.top().first;
+      list<Node *>::const_iterator iter = iter_stack.top().first;
       return *iter;
   } 
 }
@@ -168,8 +168,8 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
 {
   if (!iter_stack.empty()) {
       
-     list<const Node *>::const_iterator iter     = iter_stack.top().first; 
-     list<const Node *>::const_iterator iter_end = iter_stack.top().second; 
+     list<Node *>::const_iterator iter     = iter_stack.top().first; 
+     list<Node *>::const_iterator iter_end = iter_stack.top().second; 
      iter_stack.pop();
 
      if (iter != iter_end) { 
@@ -195,7 +195,7 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
 
 Directory::ConstDirectoryIterator  Directory::ConstDirectoryIterator::operator++(int) //postfix
 {
-   ConstDirectoryIterator temp(*this);
+   ConstDirectoryIterator temp(*this); //<-- Needs copy ctorl
    
    ++*this;
    

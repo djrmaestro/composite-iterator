@@ -73,7 +73,7 @@ class Directory : public Node {
           // Required forward iterator methods follow
           ConstDirectoryIterator();                          
           ConstDirectoryIterator(const ConstDirectoryIterator&);
-          ConstDirectoryIterator& operator=(const ConstDirectoryIterator&); // ??
+          ConstDirectoryIterator& operator=(const ConstDirectoryIterator&);
 
           const Node *operator*() const; 
          
@@ -188,4 +188,7 @@ template<typename F> void Directory::DescendNoStack(F f) //const
 
 inline Directory::DirectoryIterator::DirectoryIterator() : iter_stack() {}
 inline Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : iter_stack(rhs.iter_stack) {} 
+
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : iter_stack() {}
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : iter_stack(rhs.iter_stack) {} 
 #endif
