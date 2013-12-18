@@ -136,8 +136,7 @@ const Node *Directory::ConstDirectoryIterator::operator *() const
 {
   if (!iter_stack.empty()) {
 
-      list<Node *>::const_iterator iter = iter_stack.top().first;
-      return *iter;
+      return  *(iter_stack.top().first);
   } 
 }
 
@@ -173,13 +172,12 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
 
 Directory::ConstDirectoryIterator  Directory::ConstDirectoryIterator::operator++(int) //postfix
 {
-   ConstDirectoryIterator temp(*this); //<-- Needs copy ctorl
+   ConstDirectoryIterator temp(*this); 
    
    ++*this;
    
    return temp;
 }
-
 
 /*
 void Directory::DescendNoStack() //const
