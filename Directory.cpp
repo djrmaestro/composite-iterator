@@ -134,12 +134,8 @@ Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
 
 Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir)
 {
-  /* TODO: make_pair is causing a conversion error:  
-   * 
-   /usr/include/c++/4.8/bits/stl_pair.h:119:39: error: no matching function for call to ‘std::_List_const_iterator<const Node*>::_List_const_iterator(const std::_List_const_iterator<Node*>&)’
-  : first(__p.first), second(__p.second) { }
-   */ 
-  iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+    iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+
 }
 
 // Is this operation even needed or a part of iterator or const_iterator?

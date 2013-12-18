@@ -62,10 +62,10 @@ class Directory : public Node {
    
           friend class Directory;
 
-          // Do I need to save a reference to Directory, too, for operator==?
-          // Directory& dir;
-          std::stack< std::pair< std::list<const Node *>::const_iterator, std::list<const Node *>::const_iterator> >  iter_stack;
-       
+          // Note: Since the type Directory::fileComponents is list<Node *> and not list<const Node *>,
+          // we don't change it here. 
+          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
+          
         public:
                 
           explicit ConstDirectoryIterator(const Directory & dir); 
