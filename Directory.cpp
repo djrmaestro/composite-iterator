@@ -70,9 +70,9 @@ Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
 }
 
 
-Directory::DirectoryIterator::Directory& operator=(const DirectoryIterator& rhs) 
+Directory::iterator& Directory::DirectoryIterator:: operator=(const DirectoryIterator& rhs) 
 {
-  if (rhs != this) {
+  if (this != &rhs) {
 
      iter_stack = rhs.iter_stack;
   }
@@ -94,7 +94,8 @@ Node *Directory::DirectoryIterator::operator *() const
   } 
 }
 
-Directory::iterator  Directory::DirectoryIterator::operator++() 
+//Directory::iterator  Directory::DirectoryIterator::operator++() 
+Directory::DirectoryIterator&  Directory::iterator::operator++() 
 {
   if (!iter_stack.empty()) {
       

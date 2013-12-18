@@ -44,7 +44,7 @@ class Directory : public Node {
           // Required forward iterator methods follow
           DirectoryIterator();                          
           DirectoryIterator(const DirectoryIterator&);
-          Directory& operator=(const DirectoryIterator&); 
+          DirectoryIterator& operator=(const DirectoryIterator&); 
 
           Node *operator*() const; 
           
@@ -66,9 +66,7 @@ class Directory : public Node {
           // Directory& dir;
           std::stack< std::pair< std::list<const Node *>::const_iterator, std::list<const Node *>::const_iterator> >  iter_stack;
         
-          /* for const_iterator behavoir, we need:
-          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
-          */
+       
         public:
                 
           ConstDirectoryIterator(const Directory & dir); 
@@ -76,7 +74,7 @@ class Directory : public Node {
           // Required forward iterator methods follow
           ConstDirectoryIterator();                          
           ConstDirectoryIterator(const ConstDirectoryIterator&);
-          Directory& operator=(const ConstDirectoryIterator&); 
+          ConstDirectoryIterator& operator=(const ConstDirectoryIterator&); // ??
 
           const Node *operator*() const; 
          
@@ -84,20 +82,20 @@ class Directory : public Node {
           
           ConstDirectoryIterator& operator++();
           ConstDirectoryIterator operator++(int);
-         
-          Node &operator->() const; // is this correct?
-          
+                           
           bool operator==(const ConstDirectoryIterator& x) const;
           bool operator!=(const ConstDirectoryIterator& x) const;
      };
-
+     
     typedef DirectoryIterator iterator;   
-    typedef ConstDirectoryIterator const_iterator;   
+    
     iterator begin();
     iterator end();
-
+    
+    typedef ConstDirectoryIterator const_iterator;   
     const_iterator begin() const;
     const_iterator end() const;
+     
 
     Directory(const std::string& name, const std::string& date_created)
     {
