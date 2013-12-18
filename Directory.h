@@ -39,7 +39,7 @@ class Directory : public Node {
           */
         public:
                 
-          DirectoryIterator(Directory & dir); 
+          explicit DirectoryIterator(Directory & dir); 
 
           // Required forward iterator methods follow
           DirectoryIterator();                          
@@ -47,11 +47,11 @@ class Directory : public Node {
           DirectoryIterator& operator=(const DirectoryIterator&); 
 
           Node *operator*() const; 
+          Node **operator->() const; //  std::__addressof(static_cast<_Node*>
           
           DirectoryIterator& operator++();
           DirectoryIterator operator++(int);
          
-          Node **operator->() const;
           
           bool operator==(const DirectoryIterator& x) const;
           bool operator!=(const DirectoryIterator& x) const;
@@ -65,11 +65,10 @@ class Directory : public Node {
           // Do I need to save a reference to Directory, too, for operator==?
           // Directory& dir;
           std::stack< std::pair< std::list<const Node *>::const_iterator, std::list<const Node *>::const_iterator> >  iter_stack;
-        
        
         public:
                 
-          ConstDirectoryIterator(const Directory & dir); 
+          explicit ConstDirectoryIterator(const Directory & dir); 
 
           // Required forward iterator methods follow
           ConstDirectoryIterator();                          

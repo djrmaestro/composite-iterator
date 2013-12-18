@@ -63,7 +63,6 @@ void Directory::Descend(Directory *pdir, string path) const
     }
 }
 
-
 Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
 {
   iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
@@ -132,6 +131,81 @@ Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
    
    return temp;
 }
+
+Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir)
+{
+  /* TODO: make_pair is causing a conversion error:  
+   * 
+   /usr/include/c++/4.8/bits/stl_pair.h:119:39: error: no matching function for call to ‘std::_List_const_iterator<const Node*>::_List_const_iterator(const std::_List_const_iterator<Node*>&)’
+  : first(__p.first), second(__p.second) { }
+   */ 
+  iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+}
+
+// Is this operation even needed or a part of iterator or const_iterator?
+Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs) 
+{
+  if (this != &rhs) {
+
+     iter_stack = rhs.iter_stack;
+  }
+
+  return *this;
+}
+
+bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator& rhs) const
+{
+    return true;
+}
+
+const Node *Directory::ConstDirectoryIterator::operator *() const
+{
+  if (!iter_stack.empty()) {
+
+      list<const Node *>::const_iterator iter = iter_stack.top().first;
+      return *iter;
+  } 
+}
+
+//Directory::iterator  Directory::ConstDirectoryIterator::operator++() 
+Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator++() 
+{
+  if (!iter_stack.empty()) {
+      
+     list<const Node *>::const_iterator iter     = iter_stack.top().first; 
+     list<const Node *>::const_iterator iter_end = iter_stack.top().second; 
+     iter_stack.pop();
+
+     if (iter != iter_end) { 
+
+        iter++;
+
+        if (dynamic_cast<const Directory *>(*iter)) { 
+
+            // If Directory, push it onto stack
+            const Directory *pDir = static_cast<const Directory *>(*iter);
+            
+            iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+        }  
+
+        return *this;
+     }
+
+  } else {
+
+     // stack is empty and there is nothing to return
+  }
+}
+
+Directory::ConstDirectoryIterator  Directory::ConstDirectoryIterator::operator++(int) //postfix
+{
+   ConstDirectoryIterator temp(*this);
+   
+   ++*this;
+   
+   return temp;
+}
+
 
 /*
 void Directory::DescendNoStack() //const
