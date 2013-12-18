@@ -27,7 +27,7 @@ Directory::~Directory()
   for (;iter != iter_end; iter++) { 
      // delete Node from memory
      Node *pNode = *iter; 
-     delete pNode; // will invoke virtual dtor
+     delete pNode; // invoke virtual dtor
   }   
 }
 
@@ -73,6 +73,7 @@ Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
 Directory::DirectoryIterator::Directory& operator=(const DirectoryIterator& rhs) 
 {
   if (rhs != this) {
+
      iter_stack = rhs.iter_stack;
   }
 

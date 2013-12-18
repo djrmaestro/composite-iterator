@@ -29,11 +29,14 @@ class Directory : public Node {
      class DirectoryIterator : public std::iterator<std::input_iterator_tag, Node *> { 
    
           friend class Directory;
+
+          // Do I need to save a reference to Directory, too, for operator==?
+          // Directory& dir;
           std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iter_stack;
         
-           /* for const_iterator behavoir, we need:
-           std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
-           */
+          /* for const_iterator behavoir, we need:
+          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
+          */
         public:
                 
           DirectoryIterator(Directory & dir); 
@@ -43,21 +46,59 @@ class Directory : public Node {
           DirectoryIterator(const DirectoryIterator&);
           Directory& operator=(const DirectoryIterator&); 
 
-          Node *operator*() const; /
+          Node *operator*() const; 
           
           DirectoryIterator& operator++();
           DirectoryIterator operator++(int);
          
-          Node *operator->() const
+          Node **operator->() const;
           
           bool operator==(const DirectoryIterator& x) const;
           bool operator!=(const DirectoryIterator& x) const;
      };
 
+     // nested iterator class
+     class ConstDirectoryIterator : public std::iterator<std::input_iterator_tag, const Node *> { 
+   
+          friend class Directory;
+
+          // Do I need to save a reference to Directory, too, for operator==?
+          // Directory& dir;
+          std::stack< std::pair< std::list<const Node *>::const_iterator, std::list<const Node *>::const_iterator> >  iter_stack;
+        
+          /* for const_iterator behavoir, we need:
+          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
+          */
+        public:
+                
+          ConstDirectoryIterator(const Directory & dir); 
+
+          // Required forward iterator methods follow
+          ConstDirectoryIterator();                          
+          ConstDirectoryIterator(const ConstDirectoryIterator&);
+          Directory& operator=(const ConstDirectoryIterator&); 
+
+          const Node *operator*() const; 
+         
+          const Node **operator->() const;
+          
+          ConstDirectoryIterator& operator++();
+          ConstDirectoryIterator operator++(int);
+         
+          Node &operator->() const; // is this correct?
+          
+          bool operator==(const ConstDirectoryIterator& x) const;
+          bool operator!=(const ConstDirectoryIterator& x) const;
+     };
+
     typedef DirectoryIterator iterator;   
+    typedef ConstDirectoryIterator const_iterator;   
     iterator begin();
     iterator end();
-      
+
+    const_iterator begin() const;
+    const_iterator end() const;
+
     Directory(const std::string& name, const std::string& date_created)
     {
         this->name = name;
