@@ -15,7 +15,7 @@ class Directory : public Node {
     std::string date_created;
 
     /*
-     * Note: To make these functions template member functions, include the definition also in this header file.
+     * Note: To make these functions template member functions, you must include the definition also in this header file.
      */
     void Descend(Directory *p, std::string path) const;
     
@@ -25,7 +25,7 @@ class Directory : public Node {
 
  public:   
 
-     // nested iterator class
+     // nested iterator classes
      class DirectoryIterator : public std::iterator<std::input_iterator_tag, Node *> { 
    
           friend class Directory;
@@ -33,10 +33,7 @@ class Directory : public Node {
           // Do I need to save a reference to Directory, too, for operator==?
           // Directory& dir;
           std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
-        
-          /* for const_iterator behavoir, we need:
-          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iters_stack;
-          */
+                  
         public:
                 
           explicit DirectoryIterator(Directory & dir); 
@@ -51,7 +48,6 @@ class Directory : public Node {
           DirectoryIterator& operator++();
           DirectoryIterator operator++(int);
          
-          
           bool operator==(const DirectoryIterator& x) const;
           bool operator!=(const DirectoryIterator& x) const;
      };
@@ -60,9 +56,6 @@ class Directory : public Node {
      class ConstDirectoryIterator : public std::iterator<std::input_iterator_tag, const Node *> { 
    
           friend class Directory;
-
-          // Note: Since the type Directory::fileComponents is list<Node *> and not list<const Node *>,
-          // we don't change it here. 
           std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iters_stack;
           
         public:
@@ -85,15 +78,14 @@ class Directory : public Node {
      };
      
     typedef DirectoryIterator iterator;   
+    typedef ConstDirectoryIterator const_iterator;   
     
     iterator begin();
     iterator end();
     
-    typedef ConstDirectoryIterator const_iterator;   
     const_iterator begin() const;
     const_iterator end() const;
-     
-
+    
     Directory(const std::string& name, const std::string& date_created)
     {
         this->name = name;
@@ -133,12 +125,10 @@ class Directory : public Node {
     template<typename F> void traverse(F); //--const;
         
     ~Directory();
-      
 };
  
 template<typename F> inline void Directory::traverse(F f) //--const
 {
-    //Descend(this, std::string("./"));
     DescendNoStack(f);
 }
 //TODO: f is not used yet, sya, to print
@@ -148,7 +138,7 @@ template<typename F> void Directory::DescendNoStack(F f) //const
   
   std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
   
-  iters_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
+  iters_stack.push(std::make_pair(fileComponents.begin(), fileComponents.end()) );
 
   while(!iters_stack.empty()) {
       
@@ -174,7 +164,7 @@ template<typename F> void Directory::DescendNoStack(F f) //const
             // If Directory, push it onto stack
             Directory *pDir = static_cast<Directory *>(pNode);
             
-            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push(std::make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
             
         } else { // output file name preceeded by path
           

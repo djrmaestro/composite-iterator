@@ -6,8 +6,7 @@ using namespace std;
 
 Directory::iterator Directory::begin()
 {
-    DirectoryIterator x(*this); 
-    return x;
+    return DirectoryIterator(*this); 
 }
 
 Directory::iterator Directory::end()
@@ -17,11 +16,7 @@ Directory::iterator Directory::end()
 
 Directory::~Directory()
 {
- /*
-    traverse and delete children
-    Take advantage of the Node destructor being virtual, which will allow recursion to be used.
-   */
-  list<Node*>::iterator iter     = fileComponents.begin();
+ list<Node*>::iterator iter     = fileComponents.begin();
   list<Node*>::iterator iter_end = fileComponents.end();
 
   for (;iter != iter_end; iter++) { 
