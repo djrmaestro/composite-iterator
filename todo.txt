@@ -1,11 +1,3 @@
 1. set pCurrent in operator++
-
-2. Have operator== simply check whether
-
-   if (&directory == &rhs.directory && pCurrent == rhs.pCurrent) {
-
-      return true;
-   } else {
-
-      return false;
-   }   
+ 
+2. Where is a File's path held? In its owner composite/directory

@@ -24,14 +24,13 @@ Directory::const_iterator Directory::end() const
     return ConstDirectoryIterator(); 
 }
 
-
 // Since destructor is virtual, this will trigger a recursive descent
 Directory::~Directory()
 {
   list<Node*>::iterator iter     = fileComponents.begin();
   list<Node*>::iterator iter_end = fileComponents.end();
 
-  for (;iter != iter_end; iter++) { 
+  for (;iter != iter_end; ++iter) { 
   
      delete *iter; 
   }   
@@ -56,7 +55,7 @@ Node *Directory::Descend(Directory *pdir, string path) const
         
     cout << path << "\n";
 
-    for (; iter != end_iter; iter++) {
+    for (; iter != end_iter; ++iter) {
         
          Node *pNode = *iter;
          
@@ -75,24 +74,24 @@ Node *Directory::Descend(Directory *pdir, string path) const
     return 0;
 }
 
-Directory::DirectoryIterator::DirectoryIterator() : pDirectory(0), pCurrent(0), iters_stack()
+Directory::DirectoryIterator::DirectoryIterator() : pDirectory(0), pCurrentNode(0), iters_stack()
 {
 }        
 
-Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : pDirectory(rhs.pDirectory), pCurrent(rhs.pCurrent),
+Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : pDirectory(rhs.pDirectory), pCurrentNode(rhs.pCurrentNode),
         iters_stack(rhs.iters_stack) 
 {
 } 
 
 Directory::DirectoryIterator::DirectoryIterator(Directory& dir) : pDirectory(&dir) 
 {
-  pCurrent = pDirectory; 
+  pCurrentNode = pDirectory; 
   iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
 Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs)
 {
-  pCurrent = rhs.pCurrent;
+  pCurrentNode = rhs.pCurrentNode;
   pDirectory = rhs.pDirectory;        
   iters_stack = rhs.iters_stack; 
   return *this;
@@ -108,7 +107,7 @@ bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) cons
     1. They refer to the same underlying Directory, implying we need a reference to the Directory 
     2. their iterations are at the same element.
    */ 
-   if (pDirectory == rhs.pDirectory && pCurrent == rhs.pCurrent) {
+   if (pDirectory == rhs.pDirectory && pCurrentNode == rhs.pCurrentNode) {
 
       return true;
       
@@ -121,7 +120,7 @@ bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) cons
 
 bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
 {
-    return true;
+    return !operator==(rhs);
 }
 /*
 Node *Directory::DirectoryIterator::operator *() const
@@ -135,13 +134,12 @@ Node *Directory::DirectoryIterator::operator *() const
 */
 Node &Directory::DirectoryIterator::operator *() const
 {
+  return *pCurrentNode;
+/*  
   if (!iters_stack.empty()) {
-      /*
-      list<Node *>::iterator iter = iters_stack.top().first;
-      return **iter; 
-      */
       return **(iters_stack.top().first);
   } 
+ */ 
 }
 
 Node *Directory::DirectoryIterator::operator->() const
@@ -154,8 +152,7 @@ Node *Directory::DirectoryIterator::operator->() const
       return *(iters_stack.top().first);
   } 
 }
-
-//Directory::iterator  Directory::DirectoryIterator::operator++() 
+ 
 Directory::DirectoryIterator&  Directory::iterator::operator++() 
 {
   if (!iters_stack.empty()) {
@@ -166,9 +163,11 @@ Directory::DirectoryIterator&  Directory::iterator::operator++()
 
      if (iter != iter_end) { 
 
-        iter++;
+        ++iter; // <-- not sure this is setting pCurrentNode
 
-        if (dynamic_cast<Directory *>(*iter)) {
+        pCurrentNode = *iter;
+
+        if (dynamic_cast<Directory *>(pCurrentNode)) {
 
             // If Directory, push it onto stack
             Directory *pDir = static_cast<Directory *>(*iter);
@@ -176,13 +175,14 @@ Directory::DirectoryIterator&  Directory::iterator::operator++()
             iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
         }  
 
-        return *this;
      }
 
   } else {
 
-     // stack is empty and there is nothing to return
+      pCurrentNode = 0;
   }
+
+  return *this;
 }
 
 Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
@@ -194,25 +194,33 @@ Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
    return temp;
 }
 
-Directory::ConstDirectoryIterator::ConstDirectoryIterator() : pDirectory(0), pCurrent(0), iters_stack()
+Directory::ConstDirectoryIterator::ConstDirectoryIterator() : pDirectory(0), pCurrentNode(0), iters_stack()
 {
 }        
 
-
-Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : pDirectory(rhs.pDirectory), pCurrent(rhs.pCurrent),
+Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : pDirectory(rhs.pDirectory), pCurrentNode(rhs.pCurrentNode),
         iters_stack(rhs.iters_stack) 
 {
 } 
 
 Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir) : pDirectory(&dir)
 {
-    pCurrent = pDirectory; // correct?
+    pCurrentNode = pDirectory; // correct?
     iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+}
+
+Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs)
+{
+  pCurrentNode = rhs.pCurrentNode;
+  pDirectory = rhs.pDirectory;
+
+  iters_stack = rhs.iters_stack; 
+  return *this;
 }
 
 bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator& rhs) const
 {
-   if (pDirectory == rhs.pDirectory && pCurrent == rhs.pCurrent) {
+   if (pDirectory == rhs.pDirectory && pCurrentNode == rhs.pCurrentNode) {
 
       return true;
       
@@ -240,10 +248,15 @@ const Node *Directory::ConstDirectoryIterator::operator *() const
 
 const Node &Directory::ConstDirectoryIterator::operator *() const
 {
+    //////
+    
+  return *pCurrentNode;
+/*  
   if (!iters_stack.empty()) {
-
-      return  **(iters_stack.top().first);
+      return **(iters_stack.top().first);
   } 
+ */ 
+    
 }
 
 const Node *Directory::ConstDirectoryIterator::operator->() const
@@ -264,9 +277,10 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
 
      if (iter != iter_end) { 
 
-        iter++;
+        ++iter;
+        pCurrentNode = *iter; 
 
-        if (dynamic_cast<const Directory *>(*iter)) { 
+        if (dynamic_cast<const Directory *>(pCurrentNode)) { 
 
             // If Directory, push its fileComponents iterators onto stack
             const Directory *pDir = static_cast<const Directory *>(*iter);
@@ -274,13 +288,14 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
             iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
         }  
 
-        return *this;
      }
 
   } else {
 
      // stack is empty and there is nothing to return
+     pCurrentNode = 0;
   }
+  return *this;
 }
 
 Directory::ConstDirectoryIterator  Directory::ConstDirectoryIterator::operator++(int) //postfix
