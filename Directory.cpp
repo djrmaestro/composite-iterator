@@ -65,7 +65,7 @@ void Directory::Descend(Directory *pdir, string path) const
 
 Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
 {
-  iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+  iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
@@ -75,9 +75,9 @@ bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) cons
 
 Node *Directory::DirectoryIterator::operator *() const
 {
-  if (!iter_stack.empty()) {
+  if (!iters_stack.empty()) {
 
-      list<Node *>::iterator iter = iter_stack.top().first;
+      list<Node *>::iterator iter = iters_stack.top().first;
       return *iter;
   } 
 }
@@ -85,11 +85,11 @@ Node *Directory::DirectoryIterator::operator *() const
 //Directory::iterator  Directory::DirectoryIterator::operator++() 
 Directory::DirectoryIterator&  Directory::iterator::operator++() 
 {
-  if (!iter_stack.empty()) {
+  if (!iters_stack.empty()) {
       
-     list<Node *>::iterator iter     = iter_stack.top().first; 
-     list<Node *>::iterator iter_end = iter_stack.top().second; 
-     iter_stack.pop();
+     list<Node *>::iterator iter     = iters_stack.top().first; 
+     list<Node *>::iterator iter_end = iters_stack.top().second; 
+     iters_stack.pop();
 
      if (iter != iter_end) { 
 
@@ -100,7 +100,7 @@ Directory::DirectoryIterator&  Directory::iterator::operator++()
             // If Directory, push it onto stack
             Directory *pDir = static_cast<Directory *>(*iter);
             
-            iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
         }  
 
         return *this;
@@ -123,7 +123,7 @@ Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
 
 Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir)
 {
-    iter_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+    iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 
 }
 
@@ -134,20 +134,20 @@ bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator&
 
 const Node *Directory::ConstDirectoryIterator::operator *() const
 {
-  if (!iter_stack.empty()) {
+  if (!iters_stack.empty()) {
 
-      return  *(iter_stack.top().first);
+      return  *(iters_stack.top().first);
   } 
 }
 
 //Directory::iterator  Directory::ConstDirectoryIterator::operator++() 
 Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator++() 
 {
-  if (!iter_stack.empty()) {
+  if (!iters_stack.empty()) {
       
-     list<Node *>::const_iterator iter     = iter_stack.top().first; 
-     list<Node *>::const_iterator iter_end = iter_stack.top().second; 
-     iter_stack.pop();
+     list<Node *>::const_iterator iter     = iters_stack.top().first; 
+     list<Node *>::const_iterator iter_end = iters_stack.top().second; 
+     iters_stack.pop();
 
      if (iter != iter_end) { 
 
@@ -158,7 +158,7 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
             // If Directory, push it onto stack
             const Directory *pDir = static_cast<const Directory *>(*iter);
             
-            iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
         }  
 
         return *this;
@@ -184,14 +184,14 @@ void Directory::DescendNoStack() //const
 {
   string path = "./";
   
-  stack< pair< list<Node *>::iterator, list<Node *>::iterator> >  iter_stack;
+  stack< pair< list<Node *>::iterator, list<Node *>::iterator> >  iters_stack;
   
-  iter_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
+  iters_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
 
-  while(!iter_stack.empty()) {
+  while(!iters_stack.empty()) {
       
-     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iter_stack.top(); 
-     iter_stack.pop();
+     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iters_stack.top(); 
+     iters_stack.pop();
      
      list<Node *>::iterator iter     = top.first; 
      list<Node *>::iterator iter_end = top.second; 
@@ -212,7 +212,7 @@ void Directory::DescendNoStack() //const
             // If Directory, push it onto stack
             Directory *pDir = static_cast<Directory *>(pNode);
             
-            iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
             
         } else { // output file name preceeded by path
           
@@ -227,14 +227,14 @@ void Directory::DescendNoStack() //const
 {
   string path = "./";
   
-  stack< pair< list<Node *>::iterator, list<Node *>::iterator> >  iter_stack;
+  stack< pair< list<Node *>::iterator, list<Node *>::iterator> >  iters_stack;
   
-  iter_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
+  iters_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
 
-  while(!iter_stack.empty()) {
+  while(!iters_stack.empty()) {
       
-     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iter_stack.top(); 
-     iter_stack.pop();
+     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iters_stack.top(); 
+     iters_stack.pop();
      
      list<Node *>::iterator iter     = top.first; 
      list<Node *>::iterator iter_end = top.second; 
@@ -255,7 +255,7 @@ void Directory::DescendNoStack() //const
             // If Directory, push it onto stack
             Directory *pDir = static_cast<Directory *>(pNode);
             
-            iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
             
         } else { // output file name preceeded by path
           

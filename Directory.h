@@ -32,10 +32,10 @@ class Directory : public Node {
 
           // Do I need to save a reference to Directory, too, for operator==?
           // Directory& dir;
-          std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iter_stack;
+          std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
         
           /* for const_iterator behavoir, we need:
-          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
+          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iters_stack;
           */
         public:
                 
@@ -63,7 +63,7 @@ class Directory : public Node {
 
           // Note: Since the type Directory::fileComponents is list<Node *> and not list<const Node *>,
           // we don't change it here. 
-          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iter_stack;
+          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iters_stack;
           
         public:
                 
@@ -146,14 +146,14 @@ template<typename F> void Directory::DescendNoStack(F f) //const
 {
   std::string path = "./";
   
-  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iter_stack;
+  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
   
-  iter_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
+  iters_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
 
-  while(!iter_stack.empty()) {
+  while(!iters_stack.empty()) {
       
-     std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator >  top = iter_stack.top(); 
-     iter_stack.pop();
+     std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator >  top = iters_stack.top(); 
+     iters_stack.pop();
      
      std::list<Node *>::iterator iter     = top.first; 
      std::list<Node *>::iterator iter_end = top.second; 
@@ -174,7 +174,7 @@ template<typename F> void Directory::DescendNoStack(F f) //const
             // If Directory, push it onto stack
             Directory *pDir = static_cast<Directory *>(pNode);
             
-            iter_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
             
         } else { // output file name preceeded by path
           
@@ -184,9 +184,9 @@ template<typename F> void Directory::DescendNoStack(F f) //const
   } 
 }
 
-inline Directory::DirectoryIterator::DirectoryIterator() : iter_stack() {}
-inline Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : iter_stack(rhs.iter_stack) {} 
+inline Directory::DirectoryIterator::DirectoryIterator() : iters_stack() {}
+inline Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : iters_stack(rhs.iters_stack) {} 
 
-inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : iter_stack() {}
-inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : iter_stack(rhs.iter_stack) {} 
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : iters_stack() {}
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : iters_stack(rhs.iters_stack) {} 
 #endif
