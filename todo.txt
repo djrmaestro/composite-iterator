@@ -1,6 +1,4 @@
-1. set pCurrent at the appropriate places.
-   a. In ctor
-   b. operator++
+1. set pCurrent in operator++
 
 2. Have operator== simply check whether
 
@@ -11,6 +9,3 @@
 
       return false;
    }   
-
-3. implement default ctor (only if need) and rewrite end() so that pCurrent = 0 and stack is empty.
-   This may require directory to be changed to a pointer.

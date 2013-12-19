@@ -14,6 +14,17 @@ Directory::iterator Directory::end()
     return DirectoryIterator(); 
 }
 
+Directory::const_iterator Directory::begin() const
+{
+    return ConstDirectoryIterator(*this); 
+}
+
+Directory::const_iterator Directory::end() const
+{
+    return ConstDirectoryIterator(); 
+}
+
+
 // Since destructor is virtual, this will trigger a recursive descent
 Directory::~Directory()
 {
@@ -64,35 +75,48 @@ Node *Directory::Descend(Directory *pdir, string path) const
     return 0;
 }
 
-Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : directory(rhs.directory), pCurrent(rhs.pCurrent),
+Directory::DirectoryIterator::DirectoryIterator() : pDirectory(0), pCurrent(0), iters_stack()
+{
+}        
+
+Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : pDirectory(rhs.pDirectory), pCurrent(rhs.pCurrent),
         iters_stack(rhs.iters_stack) 
 {
 } 
 
-Directory::DirectoryIterator::DirectoryIterator(Directory& dir) : directory(dir) 
+Directory::DirectoryIterator::DirectoryIterator(Directory& dir) : pDirectory(&dir) 
 {
-  pCurrent = &dir; // correct?
+  pCurrent = pDirectory; 
   iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
+
+Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs)
+{
+  pCurrent = rhs.pCurrent;
+  pDirectory = rhs.pDirectory;        
+  iters_stack = rhs.iters_stack; 
+  return *this;
+}
+
 /*
  * Note, 
  */
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
    /*
-    std::stack<> has no iterator. We determine if two Directory iterators are identical if:
+    We determine if two Directory iterators are identical if:
     1. They refer to the same underlying Directory, implying we need a reference to the Directory 
     2. their iterations are at the same element.
-    
-    if (&this.dir == &rhs.dir && (this->operator->() == rhs.operator->())) {
-     
-       return true;
-    else {
-     
-       return false;
-    }  
-    */ 
-    return true;
+   */ 
+   if (pDirectory == rhs.pDirectory && pCurrent == rhs.pCurrent) {
+
+      return true;
+      
+   } else {
+
+      return false;
+   }   
+  
 }
 
 bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
@@ -170,21 +194,32 @@ Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
    return temp;
 }
 
+Directory::ConstDirectoryIterator::ConstDirectoryIterator() : pDirectory(0), pCurrent(0), iters_stack()
+{
+}        
 
-Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : directory(rhs.directory), pCurrent(rhs.pCurrent),
+
+Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : pDirectory(rhs.pDirectory), pCurrent(rhs.pCurrent),
         iters_stack(rhs.iters_stack) 
 {
 } 
 
-Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir) : directory(dir)
+Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir) : pDirectory(&dir)
 {
-    pCurrent = &dir; // correct?
+    pCurrent = pDirectory; // correct?
     iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
 bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator& rhs) const
 {
-    return true;
+   if (pDirectory == rhs.pDirectory && pCurrent == rhs.pCurrent) {
+
+      return true;
+      
+   } else {
+
+      return false;
+   }   
 }
 
 bool Directory::ConstDirectoryIterator::operator!=(const ConstDirectoryIterator& rhs) const

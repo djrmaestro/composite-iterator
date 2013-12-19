@@ -35,7 +35,7 @@ class Directory : public Node {
           std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
           
           Node *pCurrent;
-          Directory &directory;
+          Directory *pDirectory;
                   
         public:
                 
@@ -68,7 +68,7 @@ class Directory : public Node {
           std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iters_stack;
           
           const Node *pCurrent;
-          const Directory &directory;
+          const Directory *pDirectory;
                   
         public:
                 
@@ -243,17 +243,15 @@ template<typename F> void Directory::DescendNoStack_new(F f) //const
 inline Directory::DirectoryIterator::DirectoryIterator() : iters_stack(), pCurrent(0) {}
 */
 
-inline Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs)
-{
-  iters_stack = rhs.iters_stack; 
-  return *this;
-}
 /*
 inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : iters_stack(), pCurrent(0) {}
 */
 
 inline Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs)
 {
+  pCurrent = rhs.pCurrent;
+  pDirectory = rhs.pDirectory;
+
   iters_stack = rhs.iters_stack; 
   return *this;
 }
