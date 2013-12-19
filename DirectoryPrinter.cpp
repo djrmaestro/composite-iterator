@@ -1,27 +1,40 @@
 #include "DirectoryPrinter.h"
+#include <numeric>
+using namespace std;
 
 // put in .cpp file
-const DirectoryPrinter::top("./");
+const string DirectoryPrinter::directory_separator("/");
  
-DirectoryPrinter::DirectoryPrinter(std::ostream& ostr) : coutref(ostr), current_path(DirectoryPrinter::top) 
+DirectoryPrinter::DirectoryPrinter(std::ostream& ostr) : coutref(ostr), directory_name(".") 
 {
-  depth = 0;
-  lengths.at(depth) = top.length();
+  composite_depth = 0;
+   
+  directory_name =  '.' + DirectoryPrinter::directory_separator;
+  
+  path_component_lengths.at(composite_depth) = directory_name.length();
 }
 
-void DirectoryPrinter::print(Node *pNode, int level)
+void DirectoryPrinter::print(Node *pNode, int depth, bool isDir)
 {
-    // Is it a directory
-    if (dynamic_cast<Directory *>(pNode)) {
+    // Is it a directory, get directory_name
+    if (isDir) {
+
+        /* 
+           TODO: do something like:
+           path += pNode->getName() + std::string("/");
+
+         */
 
         int path_length;
 
-        for (int i = 0; i < level; i++) {
+        for (int i = 0; i < depth; i++) {
 
-             int path_length = std::accumulate(v.begin(), v.begin() + level, 0);
+             int path_length = std::accumulate(path_component_lengths.begin(),
+                                               path_component_lengths.begin() + depth, 0);
         }
 
         // pseudo code
+        /*
 
         int length = pNode->getName().length();
 
@@ -30,6 +43,7 @@ void DirectoryPrinter::print(Node *pNode, int level)
         lengths.at(depth) = length;
   
         current_path 
+        */ 
 
     } else { 
 

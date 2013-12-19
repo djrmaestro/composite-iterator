@@ -14,10 +14,6 @@
 
 using namespace std;
 
-void does_nothing()
-{
-    
-}
 
 int main(int argc, char** argv) 
 {
@@ -56,8 +52,15 @@ int main(int argc, char** argv)
         top.add(psubdir1);
         
         //top.traverse(does_nothing);
-        Directory::iterator x(top);
-        Directory::iterator y(top);
+        Directory::iterator iter_start = top.begin(); 
+        
+        Directory::iterator iter_end = top.end();
+        
+        if (iter_start == iter_end) {
+            int debug = 0;
+            debug++;
+            
+        }
           
     
     } catch (Node::UnsupportedOperationException& e) {

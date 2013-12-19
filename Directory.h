@@ -17,7 +17,8 @@ class Directory : public Node {
     /*
      * Note: To make these functions template member functions, you must include the definition also in this header file.
      */
-    void Descend(Directory *p, std::string path) const;
+    //-- void Descend(Directory *p, std::string path) const;
+    Node *Descend(Directory *pdir, std::string path) const;
     
     template<typename F> void DescendNoStack(F); //const; 
 
@@ -131,14 +132,19 @@ template<typename F> inline void Directory::traverse(F f) //--const
 {
     DescendNoStack(f);
 }
-//TODO: f is not used yet, sya, to print
+
+//TODO: I think pDir should perhaps be set immediately after the while loop?
+
 template<typename F> void Directory::DescendNoStack(F f) //const
 {
-  std::string path = "./";
+  std::string path = "./"; // Put in DirectoryPrinter.cpp
+
+  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack; 
   
-  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
-  
-  iters_stack.push(std::make_pair(fileComponents.begin(), fileComponents.end()) );
+  // Initially we push the this->fileComponent's begin and end iterators onto the stack.
+  iters_stack.push(std::make_pair(this->fileComponents.begin(), this->fileComponents.end()) );
+
+  Directory *pdir = this; 
 
   while(!iters_stack.empty()) {
       
@@ -148,8 +154,9 @@ template<typename F> void Directory::DescendNoStack(F f) //const
      std::list<Node *>::iterator iter     = top.first; 
      std::list<Node *>::iterator iter_end = top.second; 
  
-    //string dir_name = pdir->getName();
-     std::string dir_name = (*iter)->getName();
+     std::string dir_name = pdir->getName();
+    
+ //--std::string dir_name = (*iter)->getName();
                 
      path += dir_name + std::string("/");
         
@@ -161,14 +168,14 @@ template<typename F> void Directory::DescendNoStack(F f) //const
       
         if (dynamic_cast<Directory *>(pNode)) {
 
-            // If Directory, push it onto stack
+            // If Directory, push its fileComponent begin and end iterators onto stack
             Directory *pDir = static_cast<Directory *>(pNode);
             
-            iters_stack.push(std::make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push(std::make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) ); // <-- "Directory *" put on stack
             
         } else { // output file name preceeded by path
-          
-            std::cout << path << *pNode << std::endl; 
+           
+             std::cout << path << *pNode << std::endl; 
         }   
      }
   } 

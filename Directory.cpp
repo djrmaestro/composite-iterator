@@ -13,16 +13,17 @@ Directory::iterator Directory::end()
 {
     return DirectoryIterator(); 
 }
-
+/* 
+ * virtual destructor recursively descends deleting Nodes from memory
+ */ 
 Directory::~Directory()
 {
- list<Node*>::iterator iter     = fileComponents.begin();
+  list<Node*>::iterator iter     = fileComponents.begin();
   list<Node*>::iterator iter_end = fileComponents.end();
 
   for (;iter != iter_end; iter++) { 
-     // delete Node from memory
-     Node *pNode = *iter; 
-     delete pNode; // invoke virtual dtor
+  
+     delete *iter; // Since destructor is virtual, this will trigger a recursive descent of ~Directory.
   }   
 }
 
@@ -30,8 +31,11 @@ void Directory::print(ostream& ostr) const
 {
     ostr << getName();
 }
-
-void Directory::Descend(Directory *pdir, string path) const
+/*
+ * Non-recursive descend of composite 
+ */
+//void Directory::Descend(Directory *pdir, string path) const
+Node *Directory::Descend(Directory *pdir, string path) const
 {
     list<Node *>::iterator iter = pdir->fileComponents.begin();
     list<Node *>::iterator end_iter = pdir->fileComponents.end();
@@ -53,9 +57,12 @@ void Directory::Descend(Directory *pdir, string path) const
                
          } else { // output file name preceeded by path
              
-            cout << path << *pNode << endl; 
+            // cout << path << *pNode << endl; 
+            return pNode; 
          }   
     }
+    
+    return 0;
 }
 
 Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
