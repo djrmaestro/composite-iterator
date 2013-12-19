@@ -13,9 +13,8 @@ Directory::iterator Directory::end()
 {
     return DirectoryIterator(); 
 }
-/* 
- * virtual destructor recursively descends deleting Nodes from memory
- */ 
+
+// Since destructor is virtual, this will trigger a recursive descent
 Directory::~Directory()
 {
   list<Node*>::iterator iter     = fileComponents.begin();
@@ -23,7 +22,7 @@ Directory::~Directory()
 
   for (;iter != iter_end; iter++) { 
   
-     delete *iter; // Since destructor is virtual, this will trigger a recursive descent of ~Directory.
+     delete *iter; 
   }   
 }
 
@@ -65,22 +64,70 @@ Node *Directory::Descend(Directory *pdir, string path) const
     return 0;
 }
 
-Directory::DirectoryIterator::DirectoryIterator(Directory& dir)
+Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : directory(rhs.directory), pCurrent(rhs.pCurrent),
+        iters_stack(rhs.iters_stack) 
 {
+} 
+
+Directory::DirectoryIterator::DirectoryIterator(Directory& dir) : directory(dir) 
+{
+  pCurrent = &dir; // correct?
   iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
-
+/*
+ * Note, 
+ */
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
+   /*
+    std::stack<> has no iterator. We determine if two Directory iterators are identical if:
+    1. They refer to the same underlying Directory, implying we need a reference to the Directory 
+    2. their iterations are at the same element.
+    
+    if (&this.dir == &rhs.dir && (this->operator->() == rhs.operator->())) {
+     
+       return true;
+    else {
+     
+       return false;
+    }  
+    */ 
     return true;
 }
 
+bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
+{
+    return true;
+}
+/*
 Node *Directory::DirectoryIterator::operator *() const
 {
   if (!iters_stack.empty()) {
 
       list<Node *>::iterator iter = iters_stack.top().first;
       return *iter;
+  } 
+}
+*/
+Node &Directory::DirectoryIterator::operator *() const
+{
+  if (!iters_stack.empty()) {
+      /*
+      list<Node *>::iterator iter = iters_stack.top().first;
+      return **iter; 
+      */
+      return **(iters_stack.top().first);
+  } 
+}
+
+Node *Directory::DirectoryIterator::operator->() const
+{
+  if (!iters_stack.empty()) {
+      /*
+      list<Node *>::iterator iter = iters_stack.top().first;
+      return *iter;
+      */
+      return *(iters_stack.top().first);
   } 
 }
 
@@ -123,10 +170,16 @@ Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
    return temp;
 }
 
-Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir)
-{
-    iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 
+Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : directory(rhs.directory), pCurrent(rhs.pCurrent),
+        iters_stack(rhs.iters_stack) 
+{
+} 
+
+Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir) : directory(dir)
+{
+    pCurrent = &dir; // correct?
+    iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
 }
 
 bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator& rhs) const
@@ -134,6 +187,13 @@ bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator&
     return true;
 }
 
+bool Directory::ConstDirectoryIterator::operator!=(const ConstDirectoryIterator& rhs) const
+{
+    return true;
+}
+
+
+/*
 const Node *Directory::ConstDirectoryIterator::operator *() const
 {
   if (!iters_stack.empty()) {
@@ -141,7 +201,23 @@ const Node *Directory::ConstDirectoryIterator::operator *() const
       return  *(iters_stack.top().first);
   } 
 }
+*/
 
+const Node &Directory::ConstDirectoryIterator::operator *() const
+{
+  if (!iters_stack.empty()) {
+
+      return  **(iters_stack.top().first);
+  } 
+}
+
+const Node *Directory::ConstDirectoryIterator::operator->() const
+{
+  if (!iters_stack.empty()) {
+
+      return  *(iters_stack.top().first);
+  } 
+}
 //Directory::iterator  Directory::ConstDirectoryIterator::operator++() 
 Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator++() 
 {
@@ -157,7 +233,7 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
 
         if (dynamic_cast<const Directory *>(*iter)) { 
 
-            // If Directory, push it onto stack
+            // If Directory, push its fileComponents iterators onto stack
             const Directory *pDir = static_cast<const Directory *>(*iter);
             
             iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
@@ -182,49 +258,6 @@ Directory::ConstDirectoryIterator  Directory::ConstDirectoryIterator::operator++
 }
 
 /*
-void Directory::DescendNoStack() //const
-{
-  string path = "./";
-  
-  stack< pair< list<Node *>::iterator, list<Node *>::iterator> >  iters_stack;
-  
-  iters_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
-
-  while(!iters_stack.empty()) {
-      
-     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iters_stack.top(); 
-     iters_stack.pop();
-     
-     list<Node *>::iterator iter     = top.first; 
-     list<Node *>::iterator iter_end = top.second; 
- 
-    //string dir_name = pdir->getName();
-     string dir_name = (*iter)->getName();
-                
-     path += dir_name + string("/");
-        
-     cout << path << "\n";
-
-     for (;iter != iter_end; iter++) {
-
-        Node *pNode = *iter;
-      
-        if (dynamic_cast<Directory *>(pNode)) {
-
-            // If Directory, push it onto stack
-            Directory *pDir = static_cast<Directory *>(pNode);
-            
-            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
-            
-        } else { // output file name preceeded by path
-          
-            cout << path << *pNode << endl; 
-        }   
-     }
-  } 
-}
-*/
-/* This is now a template method define in the header file
 void Directory::DescendNoStack() //const
 {
   string path = "./";

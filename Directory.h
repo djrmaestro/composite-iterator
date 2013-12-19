@@ -21,6 +21,7 @@ class Directory : public Node {
     Node *Descend(Directory *pdir, std::string path) const;
     
     template<typename F> void DescendNoStack(F); //const; 
+    template<typename F> void DescendNoStack_new(F f); //const
 
     friend class DirectoryIterator;
 
@@ -30,10 +31,11 @@ class Directory : public Node {
      class DirectoryIterator : public std::iterator<std::input_iterator_tag, Node *> { 
    
           friend class Directory;
-
-          // Do I need to save a reference to Directory, too, for operator==?
-          // Directory& dir;
+          
           std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
+          
+          Node *pCurrent;
+          Directory &directory;
                   
         public:
                 
@@ -42,10 +44,16 @@ class Directory : public Node {
           // Required forward iterator methods follow
           DirectoryIterator();                          
           DirectoryIterator(const DirectoryIterator&);
-        
-          Node *operator*() const; 
-          Node **operator->() const; //  std::__addressof(static_cast<_Node*>
+          // The assignment and relational operators are straightforward
+          DirectoryIterator& operator=(const DirectoryIterator& other);
           
+       /* 
+          Node *operator*() const;  // could return pair<Node *, boo>, where bool indicates whether Node * is a composite. 
+          Node **operator->() const; //  std::__addressof(static_cast<_Node*>
+        */  
+
+          Node &operator*() const;  // could return pair<Node *, boo>, where bool indicates whether Node * is a composite. 
+          Node *operator->() const; 
           DirectoryIterator& operator++();
           DirectoryIterator operator++(int);
          
@@ -59,6 +67,9 @@ class Directory : public Node {
           friend class Directory;
           std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iters_stack;
           
+          const Node *pCurrent;
+          const Directory &directory;
+                  
         public:
                 
           explicit ConstDirectoryIterator(const Directory & dir); 
@@ -66,11 +77,15 @@ class Directory : public Node {
           // Required forward iterator methods follow
           ConstDirectoryIterator();                          
           ConstDirectoryIterator(const ConstDirectoryIterator&);
+          ConstDirectoryIterator& operator=(const ConstDirectoryIterator& other);
           
+/*   Prefer reference is returned
           const Node *operator*() const; 
-         
           const Node **operator->() const;
-          
+*/          
+          const Node &operator*() const; 
+          const Node *operator->() const;  
+
           ConstDirectoryIterator& operator++();
           ConstDirectoryIterator operator++(int);
                            
@@ -87,10 +102,8 @@ class Directory : public Node {
     const_iterator begin() const;
     const_iterator end() const;
     
-    Directory(const std::string& name, const std::string& date_created)
-    {
-        this->name = name;
-        this->date_created = date_created;
+    Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created)
+    {        
     }
     
     virtual void add(Node *pnode) throw(UnsupportedOperationException)
@@ -130,7 +143,7 @@ class Directory : public Node {
  
 template<typename F> inline void Directory::traverse(F f) //--const
 {
-    DescendNoStack(f);
+    DescendNoStack_new(f);
 }
 
 //TODO: I think pDir should perhaps be set immediately after the while loop?
@@ -147,18 +160,19 @@ template<typename F> void Directory::DescendNoStack(F f) //const
   Directory *pdir = this; 
 
   while(!iters_stack.empty()) {
-      
-     std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator >  top = iters_stack.top(); 
-     iters_stack.pop();
-     
-     std::list<Node *>::iterator iter     = top.first; 
-     std::list<Node *>::iterator iter_end = top.second; 
+  
+     std::list<Node *>::iterator iter     = iters_stack.top().first; 
+     std::list<Node *>::iterator iter_end = iters_stack.top().second; 
  
-     std::string dir_name = pdir->getName();
+     iters_stack.pop();
+  
+     std::string dir_name = pdir->getName(); // works
     
- //--std::string dir_name = (*iter)->getName();
-                
-     path += dir_name + std::string("/");
+      //--std::string dir_name = (*iter)->getName();
+     /* 
+      * Logic Error: path retains all subdirs added to it.  Also if pDir doesn't change, it still gets appended each time          
+      */ 
+     path += dir_name + std::string("/"); 
         
      std::cout << path << "\n";
 
@@ -171,7 +185,7 @@ template<typename F> void Directory::DescendNoStack(F f) //const
             // If Directory, push its fileComponent begin and end iterators onto stack
             Directory *pDir = static_cast<Directory *>(pNode);
             
-            iters_stack.push(std::make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) ); // <-- "Directory *" put on stack
+            iters_stack.push(std::make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) ); 
             
         } else { // output file name preceeded by path
            
@@ -181,9 +195,68 @@ template<typename F> void Directory::DescendNoStack(F f) //const
   } 
 }
 
-inline Directory::DirectoryIterator::DirectoryIterator() : iters_stack() {}
-inline Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : iters_stack(rhs.iters_stack) {} 
+template<typename F> void Directory::DescendNoStack_new(F f) //const
+{
+  std::string path_prefix = "./"; // Put in DirectoryPrinter.cpp
 
-inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : iters_stack() {}
-inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& rhs) : iters_stack(rhs.iters_stack) {} 
+  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack; 
+  
+  // Initially we push the this->fileComponent's begin and end iterators onto the stack.
+  iters_stack.push(std::make_pair(this->fileComponents.begin(), this->fileComponents.end()) );
+
+  std::string top_dir_name = this->getName() + "/";
+  
+  while(!iters_stack.empty()) {
+  
+     std::list<Node *>::iterator iter     = iters_stack.top().first; 
+     std::list<Node *>::iterator iter_end = iters_stack.top().second; 
+ 
+     iters_stack.pop();
+           
+     /* 
+      * Prior Logic Error: path retained all subdirs added to it. Subdir components were never removed.
+      */ 
+     std::string path = top_dir_name;
+        
+     std::cout << path << "\n";
+
+     for (;iter != iter_end; iter++) {
+         
+        Node *pNode = *iter;
+      
+        if (dynamic_cast<Directory *>(pNode)) {
+
+            // If Directory, push its fileComponent begin and end iterators onto stack
+            Directory *pDir = static_cast<Directory *>(pNode);
+            
+            iters_stack.push(std::make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) ); 
+            
+        } else { // output file name preceeded by path
+           
+             std::cout << path << *pNode << std::endl; 
+        }   
+     }
+  } 
+}
+
+/*
+inline Directory::DirectoryIterator::DirectoryIterator() : iters_stack(), pCurrent(0) {}
+*/
+
+inline Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs)
+{
+  iters_stack = rhs.iters_stack; 
+  return *this;
+}
+/*
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : iters_stack(), pCurrent(0) {}
+*/
+
+inline Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs)
+{
+  iters_stack = rhs.iters_stack; 
+  return *this;
+}
+
+
 #endif
