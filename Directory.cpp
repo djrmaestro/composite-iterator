@@ -160,14 +160,17 @@ Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++()
   if (!iters_stack.empty()) {
       
      // stack::top returns a reference, so I want to use references
-     // pair<list<Node *>::iterator, list<Node*>::iterator> pair_reference =  iters_stack.top(); 
+     // pair<list<Node *>::iterator, list<Node*>::iterator>& pair_reference =  iters_stack.top(); 
+     // or this--right? 
      list<Node *>::iterator& list_iter     = iters_stack.top().first; 
      list<Node *>::iterator& list_iter_end = iters_stack.top().second; 
      
      /*
-      * Aren't we popping the stack before we have completed the iteration of nodeList?
+      * We were popping the stack before we have completed the iteration of nodeList, so I move the code below in the else clause
+      * TODO:
+      * I think this method should be modeled after the HeadFirst CompositeIteraror's next() method.
       */
-     iters_stack.pop();  
+ //--iters_stack.pop();  
 
      if (list_iter != list_iter_end) { 
 
@@ -179,8 +182,7 @@ Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++()
          */ 
         pCurrentNode = *list_iter; 
         ++list_iter; // <-- local variable. bug?
-
-        
+       
 
         if (dynamic_cast<Directory *>(pCurrentNode)) {
 
@@ -191,8 +193,10 @@ Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++()
         }  
 
      } else {
-
-        // The stack is not empty, but we have finished iterating the nodeList of the current directory.
+         
+        // We have finished iterating the nodeList of the current directory, so we take it off the stack.
+         iters_stack.pop();  
+         
         // To resume processing the directory immediately above, we simply make a recursive call.
          this->DirectoryIterator::operator++();
      }
