@@ -27,12 +27,12 @@ Directory::const_iterator Directory::end() const
 // Since destructor is virtual, this will trigger a recursive descent
 Directory::~Directory()
 {
-  list<Node*>::iterator iter     = fileComponents.begin();
-  list<Node*>::iterator iter_end = fileComponents.end();
+  list<Node*>::iterator list_iter     = nodeList.begin();
+  list<Node*>::iterator list_iter_end = nodeList.end();
 
-  for (;iter != iter_end; ++iter) { 
+  for (;list_iter != list_iter_end; ++list_iter) { 
   
-     delete *iter; 
+     delete *list_iter; 
   }   
 }
 
@@ -46,8 +46,8 @@ void Directory::print(ostream& ostr) const
 //void Directory::Descend(Directory *pdir, string path) const
 Node *Directory::Descend(Directory *pdir, string path) const
 {
-    list<Node *>::iterator iter = pdir->fileComponents.begin();
-    list<Node *>::iterator end_iter = pdir->fileComponents.end();
+    list<Node *>::iterator list_iter = pdir->nodeList.begin();
+    list<Node *>::iterator end_iter = pdir->nodeList.end();
     
     string dir_name = pdir->getName();
                 
@@ -55,9 +55,9 @@ Node *Directory::Descend(Directory *pdir, string path) const
         
     cout << path << "\n";
 
-    for (; iter != end_iter; ++iter) {
+    for (; list_iter != end_iter; ++list_iter) {
         
-         Node *pNode = *iter;
+         Node *pNode = *list_iter;
          
          if (dynamic_cast<Directory *>(pNode)) {
 
@@ -86,7 +86,7 @@ Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : 
 Directory::DirectoryIterator::DirectoryIterator(Directory& dir) : pDirectory(&dir) 
 {
   pCurrentNode = pDirectory; 
-  iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+  iters_stack.push(make_pair(dir.nodeList.begin(), dir.nodeList.end()) ); 
 }
 
 Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs)
@@ -127,8 +127,8 @@ Node *Directory::DirectoryIterator::operator *() const
 {
   if (!iters_stack.empty()) {
 
-      list<Node *>::iterator iter = iters_stack.top().first;
-      return *iter;
+      list<Node *>::iterator list_iter = iters_stack.top().first;
+      return *list_iter;
   } 
 }
 */
@@ -146,8 +146,8 @@ Node *Directory::DirectoryIterator::operator->() const
 {
   if (!iters_stack.empty()) {
       /*
-      list<Node *>::iterator iter = iters_stack.top().first;
-      return *iter;
+      list<Node *>::iterator list_iter = iters_stack.top().first;
+      return *list_iter;
       */
       return *(iters_stack.top().first);
   } 
@@ -157,22 +157,22 @@ Directory::DirectoryIterator&  Directory::iterator::operator++()
 {
   if (!iters_stack.empty()) {
       
-     list<Node *>::iterator iter     = iters_stack.top().first; 
-     list<Node *>::iterator iter_end = iters_stack.top().second; 
+     list<Node *>::iterator list_iter     = iters_stack.top().first; 
+     list<Node *>::iterator list_iter_end = iters_stack.top().second; 
      iters_stack.pop();
 
-     if (iter != iter_end) { 
+     if (list_iter != list_iter_end) { 
 
-        ++iter; // <-- not sure this is setting pCurrentNode
+        ++list_iter; // <-- not sure this is setting pCurrentNode
 
-        pCurrentNode = *iter;
+        pCurrentNode = *list_iter;
 
         if (dynamic_cast<Directory *>(pCurrentNode)) {
 
             // If Directory, push it onto stack
-            Directory *pDir = static_cast<Directory *>(*iter);
+            Directory *pDir = static_cast<Directory *>(*list_iter);
             
-            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
         }  
 
      }
@@ -206,7 +206,7 @@ Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIt
 Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory& dir) : pDirectory(&dir)
 {
     pCurrentNode = pDirectory; // correct?
-    iters_stack.push(make_pair(dir.fileComponents.begin(), dir.fileComponents.end()) );
+    iters_stack.push(make_pair(dir.nodeList.begin(), dir.nodeList.end()) );
 }
 
 Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs)
@@ -271,21 +271,21 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
 {
   if (!iters_stack.empty()) {
       
-     list<Node *>::const_iterator iter     = iters_stack.top().first; 
-     list<Node *>::const_iterator iter_end = iters_stack.top().second; 
+     list<Node *>::const_iterator list_iter     = iters_stack.top().first; 
+     list<Node *>::const_iterator list_iter_end = iters_stack.top().second; 
      iters_stack.pop();
 
-     if (iter != iter_end) { 
+     if (list_iter != list_iter_end) { 
 
-        ++iter;
-        pCurrentNode = *iter; 
+        ++list_iter;
+        pCurrentNode = *list_iter; 
 
         if (dynamic_cast<const Directory *>(pCurrentNode)) { 
 
-            // If Directory, push its fileComponents iterators onto stack
-            const Directory *pDir = static_cast<const Directory *>(*iter);
+            // If Directory, push its nodeList iterators onto stack
+            const Directory *pDir = static_cast<const Directory *>(*list_iter);
             
-            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
         }  
 
      }
@@ -314,33 +314,33 @@ void Directory::DescendNoStack() //const
   
   stack< pair< list<Node *>::iterator, list<Node *>::iterator> >  iters_stack;
   
-  iters_stack.push(make_pair(fileComponents.begin(), fileComponents.end()) );
+  iters_stack.push(make_pair(nodeList.begin(), nodeList.end()) );
 
   while(!iters_stack.empty()) {
       
      pair< list<Node *>::iterator, list<Node *>::iterator >  top = iters_stack.top(); 
      iters_stack.pop();
      
-     list<Node *>::iterator iter     = top.first; 
-     list<Node *>::iterator iter_end = top.second; 
+     list<Node *>::iterator list_iter     = top.first; 
+     list<Node *>::iterator list_iter_end = top.second; 
  
     //string dir_name = pdir->getName();
-     string dir_name = (*iter)->getName();
+     string dir_name = (*list_iter)->getName();
                 
      path += dir_name + string("/");
         
      cout << path << "\n";
 
-     for (;iter != iter_end; iter++) {
+     for (;list_iter != list_iter_end; list_iter++) {
 
-        Node *pNode = *iter;
+        Node *pNode = *list_iter;
       
         if (dynamic_cast<Directory *>(pNode)) {
 
             // If Directory, push it onto stack
             Directory *pDir = static_cast<Directory *>(pNode);
             
-            iters_stack.push( make_pair(pDir->fileComponents.begin(), pDir->fileComponents.end()) );
+            iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
             
         } else { // output file name preceeded by path
           
