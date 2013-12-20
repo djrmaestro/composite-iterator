@@ -153,19 +153,30 @@ Node *Directory::DirectoryIterator::operator->() const
   } 
 }
  
-Directory::DirectoryIterator&  Directory::iterator::operator++() 
+Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++() 
 {
   if (!iters_stack.empty()) {
       
      list<Node *>::iterator list_iter     = iters_stack.top().first; 
      list<Node *>::iterator list_iter_end = iters_stack.top().second; 
-     iters_stack.pop();
+     
+     /*
+      * Aren't we popping the stack before we have completed the iteration of nodeList?
+      */
+     iters_stack.pop();  
 
      if (list_iter != list_iter_end) { 
 
-        ++list_iter; // <-- not sure this is setting pCurrentNode
+        /*
+         * The ctor sets pCurrentNode to this->pDirectory. Therefore we have yet to visit the first node of this->nodeList. So we advance the iterator
+         * after setting pCurrentNode.
+         * Question: Is list_iter just a local variable and there differs from the iterator on the stack? Maybe I really need a reference to
+         * the iterator on the stack.
+         */ 
+        pCurrentNode = *list_iter; 
+        ++list_iter; // <-- local variable. bug?
 
-        pCurrentNode = *list_iter;
+        
 
         if (dynamic_cast<Directory *>(pCurrentNode)) {
 
@@ -175,7 +186,13 @@ Directory::DirectoryIterator&  Directory::iterator::operator++()
             iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
         }  
 
+     } else {
+
+        // The stack is not empty, but we have finished iterating the nodeList of the current directory.
+        // To resume processing the directory immediately above, we simply make a recursive call.
+         this->DirectoryIterator::operator++();
      }
+
 
   } else {
 
@@ -276,9 +293,15 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
      iters_stack.pop();
 
      if (list_iter != list_iter_end) { 
-
-        ++list_iter;
+        
+        /*
+         * The ctor sets pCurrentNode to this->pDirectory. Therefore we have yet to visit the first node of this->nodeList. So we advance the iterator
+         * after setting pCurrentNode.
+         * Question: Is list_iter just a local variable and there differs from the iterator on the stack? Maybe I really need a reference to
+         * the iterator on the stack.
+         */ 
         pCurrentNode = *list_iter; 
+        ++list_iter; // <-- local variable. bug?
 
         if (dynamic_cast<const Directory *>(pCurrentNode)) { 
 
@@ -288,6 +311,11 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
             iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
         }  
 
+     } else {
+
+        // The stack is not empty, but we done iterating the of the current directory.
+        // To resume processing the directory immediately above, we simply make a recursive call.
+         this->ConstDirectoryIterator::operator++(); 
      }
 
   } else {
