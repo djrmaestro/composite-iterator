@@ -149,7 +149,9 @@ Node *Directory::DirectoryIterator::operator->() const
       list<Node *>::iterator list_iter = iters_stack.top().first;
       return *list_iter;
       */
-      return *(iters_stack.top().first);
+  
+     // return *(iters_stack.top().first);
+     return pCurrentNode;
   } 
 }
  
@@ -157,8 +159,10 @@ Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++()
 {
   if (!iters_stack.empty()) {
       
-     list<Node *>::iterator list_iter     = iters_stack.top().first; 
-     list<Node *>::iterator list_iter_end = iters_stack.top().second; 
+     // stack::top returns a reference, so I want to use references
+     // pair<list<Node *>::iterator, list<Node*>::iterator> pair_reference =  iters_stack.top(); 
+     list<Node *>::iterator& list_iter     = iters_stack.top().first; 
+     list<Node *>::iterator& list_iter_end = iters_stack.top().second; 
      
      /*
       * Aren't we popping the stack before we have completed the iteration of nodeList?
@@ -280,7 +284,8 @@ const Node *Directory::ConstDirectoryIterator::operator->() const
 {
   if (!iters_stack.empty()) {
 
-      return  *(iters_stack.top().first);
+      //return  *(iters_stack.top().first);
+      return pCurrentNode;
   } 
 }
 //Directory::iterator  Directory::ConstDirectoryIterator::operator++() 
