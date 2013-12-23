@@ -1,3 +1,4 @@
+
 #ifndef  Directory_H_121223013
 #define  Directory_H_121223013
 #include <iosfwd>
@@ -29,7 +30,7 @@ class Directory : public Node {
 
     std::string path; 
 
-    protected:
+ protected:
 
     void setPath(std::string)  throw(UnsupportedOperationException);
 
@@ -136,11 +137,7 @@ class Directory : public Node {
     
     Directory(const std::string& dir_name, const std::string& created);
     
-    
-    virtual void add(Node *pnode) throw(UnsupportedOperationException)
-    {
-        nodeList.push_back(pnode);
-    }
+    virtual void add(Node *pnode) throw(UnsupportedOperationException);
     
     virtual void remove(Node *pnode) throw(UnsupportedOperationException)
     {

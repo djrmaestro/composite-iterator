@@ -9,6 +9,16 @@ Directory::Directory(const std::string& dir_name, const std::string& created) : 
    path = "./";  // default path
 }
 
+/*
+ * Bug: is the default ctor set Directory::path to "./" then 
+ */
+void Directory::add(Node *pNode) throw(UnsupportedOperationException)
+{
+    pNode->setPath(this->path);
+ 
+    nodeList.push_back(pNode);
+}
+
 void Directory::setPath(string subdir_path) throw(UnsupportedOperationException)
 {
      path = subdir_path + Node::directory_separator;

@@ -9,21 +9,28 @@
 #include <string>
 #include "Node.h"
 
+class Directory;
+
 class File : public Node {
 
     std::string name;
+    std::string path; 
     std::string date_created;
 
     File(const File&); // can't have duplicate files
+
+    protected:
+
+    void setPath(std::string) throw(UnsupportedOperationException);
 
     public:   
   
     File(const std::string& name, const std::string& date_created)
     {
+        // TODO: need to set path. Directory.add() should set the path.
         this->name = name;
         this->date_created = date_created;
     }
-    
     
     virtual std::string getName() const throw(UnsupportedOperationException)
     {
@@ -35,7 +42,7 @@ class File : public Node {
         return date_created;
     }
 
-    // TODO: change this to overload << operator -- or should I keep print()? 
+    // Called by Node::operator<<(ostream&)
     virtual void print(std::ostream& ostr) const;
 };
 #endif

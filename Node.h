@@ -6,9 +6,12 @@
 #include <iosfwd>
 #include <string>
 #include <exception>
+class Directory;
 
 class Node {
     
+  friend class Directory;    
+  
 public:
     
     class UnsupportedOperationException : public std::exception {
