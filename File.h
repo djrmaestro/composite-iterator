@@ -1,9 +1,3 @@
-/* 
- * File:   File.h
- * Author: kurt
- *
- * Created on December 12, 2013, 10:10 AM
- */
 #ifndef FILE_H_12122013
 #define  FILE_H_12122013
 #include <string>
@@ -25,11 +19,8 @@ class File : public Node {
 
     public:   
   
-    File(const std::string& name, const std::string& date_created)
+    File(const std::string& file_name, const std::string& created_date) : name(file_name), date_created(created_date)
     {
-        // TODO: need to set path. Directory.add() should set the path.
-        this->name = name;
-        this->date_created = date_created;
     }
     
     virtual std::string getName() const throw(UnsupportedOperationException)

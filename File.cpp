@@ -4,7 +4,7 @@ using namespace std;
 
 void File::print(ostream& ostr) const
 {
-    ostr << getName();
+    ostr << path + getName();
 }
 
  void File::setPath(string subdir_path) throw(UnsupportedOperationException)

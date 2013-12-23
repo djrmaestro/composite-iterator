@@ -4,9 +4,8 @@
 
 using namespace std;
 
-Directory::Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created)
+Directory::Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created), path("")
 {    
-   path = "./";  // default path
 }
 
 /*
@@ -142,12 +141,19 @@ Directory::~Directory()
      delete *list_iter; 
   }   
 }
+
 /*
- * This does not print the full path. Do I add a path member variable to File and Directory?
+  This prints in-order. Thus, if dir1 and dir2 were added to top before top_f1, the output will look like
+  top/
+  top/dir1
+  top/dir1/dir_f1
+  top/dir2
+  top/dir2/dir2_f1
+  top/top_f1
  */
 void Directory::print(ostream& ostr) const
 {
-    ostr << getName() << "\n";
+    ostr << path + getName() << "\n";
 
     // print children info
     Directory *pDir = const_cast<Directory *>(this);

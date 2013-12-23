@@ -1,4 +1,3 @@
-
 #ifndef  Directory_H_121223013
 #define  Directory_H_121223013
 #include <iosfwd>
@@ -15,7 +14,6 @@ class Directory : public Node {
     std::string name;
     std::string date_created;
 
-    //-- void Descend(Directory *p, std::string path) const;
     Node *Descend(Directory *pdir, std::string path) const;
 
     /*

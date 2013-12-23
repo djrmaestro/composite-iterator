@@ -3,6 +3,7 @@ dist/
 docs/
 build/
 nbproject/
+menuiterator/
 README
 DirectoryIterator.h.backup
 DirectoryIterator.cpp.backup

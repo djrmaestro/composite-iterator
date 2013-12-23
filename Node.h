@@ -29,7 +29,6 @@ protected:
     
     virtual void setPath(std::string path)  throw(UnsupportedOperationException)
     { 
-      // change to throw
       throw UnsupportedOperationException();
     }
 
@@ -37,7 +36,6 @@ public:
     
     virtual void add(Node* ele) throw(UnsupportedOperationException)
     { 
-      // change to throw
       throw UnsupportedOperationException();
     }
 
