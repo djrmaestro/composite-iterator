@@ -8,17 +8,29 @@
 #include <exception>
 
 class Node {
-
+    
 public:
     
     class UnsupportedOperationException : public std::exception {
-       public:  
+        public:  
            
        virtual const char* what() const throw()
        {
           return "This operation is not supported by the class";
        }
     };
+    
+protected:
+    
+    static const char directory_separator = '/';
+    
+    virtual void setPath(std::string path)  throw(UnsupportedOperationException)
+    { 
+      // change to throw
+      throw UnsupportedOperationException();
+    }
+
+public:    
     
     virtual void add(Node* ele) throw(UnsupportedOperationException)
     { 

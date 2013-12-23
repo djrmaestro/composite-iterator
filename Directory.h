@@ -24,8 +24,38 @@ class Directory : public Node {
     template<typename F> void DescendNoStack_new(F f); //const
 
     friend class DirectoryIterator;
+    friend class ConstDirectoryIterator;
+    friend class CompositeIterator; // <-- remove later
 
- public:   
+    std::string path; 
+
+    protected:
+
+    void setPath(std::string)  throw(UnsupportedOperationException);
+
+  public:
+
+      // nested test iterator classes
+     class CompositeIterator : public std::iterator<std::forward_iterator_tag, Node *> { 
+   
+          friend class Directory;
+          
+          std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
+          
+          Node *pCurrentNode;         
+          Directory *pDirectory;  // The top level directory which will be iterated.
+                  
+        public:
+                
+          explicit CompositeIterator(Directory & dir); 
+
+          // Required forward iterator methods follow
+          CompositeIterator();                          
+          CompositeIterator(const CompositeIterator&);
+          CompositeIterator& operator=(const CompositeIterator& other);
+          Node *next();
+          bool hasNext();
+     };
 
      // nested iterator classes
      class DirectoryIterator : public std::iterator<std::forward_iterator_tag, Node *> { 
@@ -92,6 +122,9 @@ class Directory : public Node {
           bool operator!=(const ConstDirectoryIterator& x) const;
      };
      
+    CompositeIterator begin_composite();
+    //--CompositeIterator end_composite();
+    
     typedef DirectoryIterator iterator;   
     typedef ConstDirectoryIterator const_iterator;   
     
@@ -101,9 +134,8 @@ class Directory : public Node {
     const_iterator begin() const;
     const_iterator end() const;
     
-    Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created)
-    {        
-    }
+    Directory(const std::string& dir_name, const std::string& created);
+    
     
     virtual void add(Node *pnode) throw(UnsupportedOperationException)
     {

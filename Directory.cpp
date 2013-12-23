@@ -4,6 +4,103 @@
 
 using namespace std;
 
+Directory::Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created)
+{    
+   path = "./";  // default path
+}
+
+void Directory::setPath(string subdir_path) throw(UnsupportedOperationException)
+{
+     path = subdir_path + Node::directory_separator;
+}
+////////////
+Directory::CompositeIterator Directory::begin_composite()
+{
+    return CompositeIterator(*this); 
+}
+/*
+Directory::CompositeIterator Directory::end_composite()
+{
+    return CompositeIterator(); 
+}
+*/
+Directory::CompositeIterator::CompositeIterator(Directory &dir)
+{
+   pDirectory = &dir; 
+   iters_stack.push(make_pair(  dir.nodeList.begin(), dir.nodeList.end() ));
+}
+
+Directory::CompositeIterator::CompositeIterator()
+{
+   pDirectory = 0; 
+}
+
+bool Directory::CompositeIterator::hasNext()
+
+{
+   if (iters_stack.empty()) {
+
+	return false;
+
+   } else {
+
+	pair<list<Node*>::iterator, list<Node*>::iterator>& pair_ = iters_stack.top();
+        list<Node*>::iterator& list_iter = pair_.first;
+        list<Node*>::iterator& list_iter_end = pair_.second;
+
+	 if (list_iter == list_iter_end) {
+
+	     iters_stack.pop();
+
+	     return hasNext();
+
+	} else {
+
+	      return true;
+	}
+   }
+}
+
+Node *Directory::CompositeIterator::next()
+{
+  if (hasNext()) {
+
+	pair<list<Node*>::iterator, list<Node*>::iterator>& pair_ = iters_stack.top();
+        list<Node*>::iterator& list_iter = pair_.first;
+        list<Node*>::iterator& list_iter_end = pair_.second;
+
+        Node *pNode = *list_iter;
+        ++list_iter; 
+
+        if (dynamic_cast<Directory *>(pNode)) {
+
+             Directory *pDir = static_cast<Directory *>(pNode);
+             iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
+        }
+
+        return pNode; 
+        /*
+        // start java code
+        // Is iterator here always CompositeIterator? I believe so because the ctor and the line below
+        // are the only two places where push is called.
+	MenuComponent component = (MenuComponent) iterator.next(); 
+
+	if (component instanceof Menu) {
+
+	  //	stack.push(component.createIterator());
+		iters_stack.push(component->begin_composite());
+	} 
+
+	return component;
+        // end java code
+        */
+
+  } else {
+
+     return 0;
+  }
+}
+/////////////
 Directory::iterator Directory::begin()
 {
     return DirectoryIterator(*this); 
@@ -35,10 +132,36 @@ Directory::~Directory()
      delete *list_iter; 
   }   
 }
-
+/*
+ * This does not print the full path. Do I add a path member variable to File and Directory?
+ */
 void Directory::print(ostream& ostr) const
 {
-    ostr << getName();
+    ostr << getName() << "\n";
+
+    // print children info
+    Directory *pDir = const_cast<Directory *>(this);
+    
+    Directory::CompositeIterator  iter_current = pDir->begin_composite(); 
+                           
+    while (iter_current.hasNext()) {
+        
+          Node *pNode = iter_current.next();
+          
+          cout << pNode->getName(); 
+          
+          if (dynamic_cast<Directory*>(pNode) ) {
+              
+             cout << " is a Directory ";
+              
+          } else {
+              
+              cout << " is a File ";
+          }
+          
+          cout << endl;
+           
+    }
 }
 /*
  * Non-recursive descend of composite 
