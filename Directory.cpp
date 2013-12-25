@@ -22,6 +22,7 @@ Directory::const_iterator Directory::end() const
 {
     return ConstDirectoryIterator(); 
 }
+ 
 /*
 bool Directory::DirectoryIterator::hasNext()
 {
@@ -194,7 +195,7 @@ Directory::DirectoryIterator::DirectoryIterator(Directory& dir) : pDirectory(&di
   iters_stack.push(make_pair(dir.nodeList.begin(), dir.nodeList.end()) ); 
   pCurrentNode = pDirectory; 
 }
-/*--
+
 Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs)
 {
   pCurrentNode = rhs.pCurrentNode;
@@ -202,7 +203,6 @@ Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const Dire
   iters_stack = rhs.iters_stack; 
   return *this;
 }
-*/
 
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
@@ -264,6 +264,22 @@ Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
    return tmp;
 }
 
+
+Directory::ConstDirectoryIterator Directory::ConstDirectoryIterator::operator++(int)
+{
+    ConstDirectoryIterator tmp(*this);
+   
+   ++*this;
+   
+   return tmp;
+}
+Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs)
+{
+    inner_iter = rhs.inner_iter;
+    return *this;
+}
+       
+/*
 Directory::ConstDirectoryIterator::ConstDirectoryIterator() : pDirectory(0), pCurrentNode(0), iters_stack()
 {
 }        
@@ -305,18 +321,6 @@ bool Directory::ConstDirectoryIterator::operator!=(const ConstDirectoryIterator&
     return true;
 }
 
-
-/*
-const Node *Directory::ConstDirectoryIterator::operator *() const
-{
-  if (!iters_stack.empty()) {
-
-      return  *(iters_stack.top().first);
-  } 
-}
-*/
-
-
 const Node *Directory::ConstDirectoryIterator::operator->() const
 {
   if (!iters_stack.empty()) {
@@ -344,8 +348,8 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
 	     return this->operator++(); // recurse
 
 	} else {
-              /* pCurrentNode was set to "this" in ctor. We need to always first dereference the list iterator before
-               * advancing it. */
+              // pCurrentNode was set to "this" in ctor. We need to always first dereference the list iterator before
+              // advancing it.
               
               pCurrentNode = *list_iter; 
               ++list_iter;  
@@ -360,15 +364,7 @@ Directory::ConstDirectoryIterator&  Directory::ConstDirectoryIterator::operator+
   
   return *this;
 }
-
-Directory::ConstDirectoryIterator  Directory::ConstDirectoryIterator::operator++(int) //postfix
-{
-   ConstDirectoryIterator tmp(*this); 
-   
-   ++*this;
-   
-   return tmp;
-}
+*/
 
 /*
 void Directory::DescendNoStack() //const

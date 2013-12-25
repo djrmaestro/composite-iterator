@@ -60,17 +60,14 @@ class Directory : public Node {
 
      // nested iterator class
      class ConstDirectoryIterator : public std::iterator<std::forward_iterator_tag, const Node *> { 
-   
+
           friend class Directory;
-          std::stack< std::pair< std::list<Node *>::const_iterator, std::list<Node *>::const_iterator> >  iters_stack;
-          
-          const Node *pCurrentNode;
-          const Directory *pDirectory;
-                  
+
+           DirectoryIterator inner_iter; // fwd operations here, using "const_cast<Directory *>(this)->method()"            
         public:
                 
           explicit ConstDirectoryIterator(const Directory & dir); 
-
+          
           // Required forward iterator methods follow
           ConstDirectoryIterator();                          
           ConstDirectoryIterator(const ConstDirectoryIterator&);
@@ -78,7 +75,7 @@ class Directory : public Node {
           
           const Node &operator*() const; 
           const Node *operator->() const;  
-
+          
           ConstDirectoryIterator& operator++();
           ConstDirectoryIterator operator++(int);
                            
@@ -268,10 +265,42 @@ inline bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rh
     return !operator==(rhs);
 }
 
-inline const Node &Directory::ConstDirectoryIterator::operator *() const
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory & dir) : inner_iter(const_cast<Directory &>(dir))
 {
-  return *pCurrentNode;
     
 }
 
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : inner_iter()                          
+{
+}
+
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& citer) : inner_iter(citer.inner_iter) 
+{
+}
+
+inline  Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator++()
+{
+  ++inner_iter;
+  return *this;
+}
+
+inline const Node &Directory::ConstDirectoryIterator::operator*() const
+{
+    return const_cast<const Node &>(*inner_iter);
+} 
+ 
+inline const Node *Directory::ConstDirectoryIterator::operator->() const  
+{
+     return const_cast<const Node *>(inner_iter.operator->());
+}
+
+inline bool Directory::ConstDirectoryIterator::operator==(const ConstDirectoryIterator& x) const
+{
+    return inner_iter == x.inner_iter;
+}
+
+inline bool Directory::ConstDirectoryIterator::operator!=(const ConstDirectoryIterator& x) const
+{
+     return inner_iter != x.inner_iter; 
+}
 #endif
