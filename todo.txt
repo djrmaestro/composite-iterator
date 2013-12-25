@@ -1,3 +1,4 @@
-The converted Head First code is now printing in-order. 
-
-The path names are not being set properly. I think there is a logic error. File::path seems really to just be its parent subdir.
+Test stl-like code more. Put the CompositeIterator forward iterator methods into
+DirectoryIterator and ConstDirectoryIterator. Move the next() and hasNext() methods also into both
+these classes, leaving them commented out. Retest. Then removed CompositeIterator and 
+begin_composite() and end_composite.

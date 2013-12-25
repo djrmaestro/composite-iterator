@@ -13,19 +13,13 @@ void Directory::add(Node *pNode) throw(UnsupportedOperationException)
     nodeList.push_back(pNode);
 }
 
-////////////
+// 
 Directory::CompositeIterator Directory::begin_composite()
 {
     return CompositeIterator(*this); 
 }
 
-
 /*
-Directory::CompositeIterator Directory::end_composite()
-{
-    return CompositeIterator(); 
-}
-*/
 bool Directory::CompositeIterator::hasNext()
 {
    if (iters_stack.empty()) {
@@ -55,9 +49,8 @@ Node *Directory::CompositeIterator::next()
 {
   if (hasNext()) {
 
-	pair<list<Node*>::iterator, list<Node*>::iterator>& pair_ = iters_stack.top();
-        list<Node*>::iterator& list_iter = pair_.first;
-        list<Node*>::iterator& list_iter_end = pair_.second;
+        list<Node*>::iterator& list_iter = iters_stack.top().first;
+        list<Node*>::iterator& list_iter_end = iters_stack.top().second;
 
         Node *pNode = *list_iter;
         ++list_iter; 
@@ -69,35 +62,19 @@ Node *Directory::CompositeIterator::next()
         }
 
         return pNode; 
-        /*
-        // start java code
-        // Is iterator here always CompositeIterator? I believe so because the ctor and the line below
-        // are the only two places where push is called.
-	MenuComponent component = (MenuComponent) iterator.next(); 
-
-	if (component instanceof Menu) {
-
-	  //	stack.push(component.createIterator());
-		iters_stack.push(component->begin_composite());
-	} 
-
-	return component;
-        // end java code
-        */
-
+ 
   } else {
 
      return 0;
   }
 }
+*/
 Directory::CompositeIterator::CompositeIterator(Directory &dir)
 {
    pDirectory = &dir; 
 
    iters_stack.push(make_pair(  dir.nodeList.begin(), dir.nodeList.end() ));
 
-   // set pCurrentNode
-   // pCurrentNode = *iters_stack.top().first;
    pCurrentNode = pDirectory;  
 }
 
@@ -112,10 +89,6 @@ Directory::CompositeIterator&  Directory::CompositeIterator::operator++()
 	list<Node*>::iterator& list_iter     = iters_stack.top().first;
 	list<Node*>::iterator& list_iter_end = iters_stack.top().second;
         
-        /* TODO: Debug code to add: 
-         *  int list_size = iters_stack.top().first.size()
-         */  
-
 	 if (list_iter == list_iter_end) {
 
 	     iters_stack.pop();
@@ -123,9 +96,11 @@ Directory::CompositeIterator&  Directory::CompositeIterator::operator++()
 	     return this->operator++(); // recurse
 
 	} else {
-               
+              /* pCurrentNode was set to "this" in ctor. We need to always first dereference the list iterator before
+               * advancing it. */
+              
+              pCurrentNode = *list_iter; 
               ++list_iter;  
-              pCurrentNode = *list_iter; // Seems wrong
 
               if (dynamic_cast<Directory *>(pCurrentNode)) {
 
@@ -162,7 +137,7 @@ bool Directory::CompositeIterator::operator!=(const CompositeIterator& rhs)
     return !operator==(rhs);
 }
 
-/////////////
+// Start prior code
 Directory::iterator Directory::begin()
 {
     return DirectoryIterator(*this); 

@@ -46,10 +46,11 @@ class Directory : public Node {
           CompositeIterator();                          
           CompositeIterator(const CompositeIterator&);
           CompositeIterator& operator=(const CompositeIterator& other);
+          /*
           Node *next();
           bool hasNext();
-
-          // new but untested
+          */
+          
           bool operator==(const CompositeIterator& rhs);
           bool operator!=(const CompositeIterator& rhs);
           CompositeIterator& operator++();

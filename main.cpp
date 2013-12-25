@@ -46,7 +46,7 @@ int main(int argc, char** argv)
    
         top.add(psubdir_mid);
 
-        top.print(cout); // print top level directory and its children
+        top.print_debug(cout); // print top level directory and its children
          
         // print children info
         /* Directory::print() already do what this code is doing
@@ -70,16 +70,18 @@ int main(int argc, char** argv)
               cout << endl;
                
         }
-        */ 
-        
+         
+        /* Debug version
         cout << "\n ============= \n" << endl;
-        /*    
+
+        Directory::CompositeIterator iter_current = top.begin_composite();
+        Directory::CompositeIterator iter_end = top.end_composite();
+
         for (;iter_current != iter_end; ++iter_current) {
             
-              Node &node = *iter_current;
-              Node *pNode = &node;
-              
-              cout << node.getName(); 
+              Node *pNode = *iter_current;
+                                        
+              cout <<  "[address: " << hex << pNode << "] " << pNode->getName(); 
               
               if (dynamic_cast<Directory*>(pNode) ) {
                   
@@ -93,9 +95,11 @@ int main(int argc, char** argv)
               cout << endl;
         }
         */ 
+         
+        /* 
         cout << "\n Doing top.traverse(do_nothing) " << endl;
         top.traverse(do_nothing);
-  
+        */
           
     
     } catch (Node::UnsupportedOperationException& e) {
