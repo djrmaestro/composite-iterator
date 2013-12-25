@@ -4,13 +4,10 @@
 
 using namespace std;
 
-Directory::Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created), path("")
+Directory::Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created)
 {    
 }
 
-/*
- * Bug: is the default ctor set Directory::path to "./" then 
- */
 void Directory::add(Node *pNode) throw(UnsupportedOperationException)
 {
     nodeList.push_back(pNode);
@@ -209,7 +206,7 @@ Directory::~Directory()
  */
 void Directory::print(ostream& ostr) const
 {
-    ostr << path + getName() << "\n";
+    ostr << getName() << "\n";
 
     // print children info
     Directory *pDir = const_cast<Directory *>(this);
@@ -221,6 +218,36 @@ void Directory::print(ostream& ostr) const
           Node *pNode = iter_current.next();
           
           cout << pNode->getName(); 
+          
+          if (dynamic_cast<Directory*>(pNode) ) {
+              
+             cout << " is a Directory ";
+              
+          } else {
+              
+              cout << " is a File ";
+          }
+          
+          cout << endl;
+           
+    }
+}
+// debug version prefixes address
+
+void Directory::print_debug(ostream& ostr) const
+{
+    ostr << "[address: " << this << "] " << getName() << "\n";
+
+    // print children info
+    Directory *pDir = const_cast<Directory *>(this);
+    
+    Directory::CompositeIterator  iter_current = pDir->begin_composite(); 
+                           
+    while (iter_current.hasNext()) {
+        
+          Node *pNode = iter_current.next();
+          
+          cout << "[address: " << pNode << "] " << pNode->getName(); 
           
           if (dynamic_cast<Directory*>(pNode) ) {
               

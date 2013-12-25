@@ -26,8 +26,6 @@ class Directory : public Node {
     friend class ConstDirectoryIterator;
     friend class CompositeIterator; // <-- remove later
 
-    std::string path; 
-
   public:
 
       // nested test iterator classes
@@ -164,6 +162,7 @@ class Directory : public Node {
     }
     
     virtual void print(std::ostream&) const;
+    virtual void print_debug(std::ostream&) const;
 
     template<typename F> void traverse(F); //--const;
         
