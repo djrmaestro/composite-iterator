@@ -1,4 +1,2 @@
-Test stl-like code more. Put the CompositeIterator forward iterator methods into
-DirectoryIterator and ConstDirectoryIterator. Move the next() and hasNext() methods also into both
-these classes, leaving them commented out. Retest. Then removed CompositeIterator and 
-begin_composite() and end_composite.
+ConstDirectoryIterator blows up, but DirectoryIterator seems to work out. So there is some
+discrepency between them.
