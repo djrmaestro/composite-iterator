@@ -8,14 +8,9 @@ class Directory;
 class File : public Node {
 
     std::string name;
-    std::string path; 
     std::string date_created;
 
     File(const File&); // can't have duplicate files
-
-    protected:
-
-    void setPath(std::string) throw(UnsupportedOperationException);
 
     public:   
   

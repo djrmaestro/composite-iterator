@@ -28,10 +28,6 @@ class Directory : public Node {
 
     std::string path; 
 
- protected:
-
-    void setPath(std::string)  throw(UnsupportedOperationException);
-
   public:
 
       // nested test iterator classes
