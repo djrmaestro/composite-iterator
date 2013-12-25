@@ -71,7 +71,7 @@ int main(int argc, char** argv)
                
         }
        */
-         
+        
         // Debug version
         cout << "\n ============= \n" << endl;
 
@@ -85,6 +85,31 @@ int main(int argc, char** argv)
               cout <<  "[address: " << hex << &node << "] " << node.getName(); 
               
               if (dynamic_cast<Directory*>(&node) ) {
+                  
+                 cout << " is a Directory ";
+                  
+              } else {
+                  
+                  cout << " is a File ";
+              }
+              
+              cout << endl;
+        }
+        
+        cout << "\n Testing Directory::const_iterator ====\n";
+        
+        const Directory& const_top = top;
+        
+        Directory::const_iterator const_iter_current = const_top.begin();
+        Directory::const_iterator const_iter_end = const_top.end();
+
+        for (;const_iter_current != const_iter_end; ++const_iter_current) {
+            
+              const Node &node = *const_iter_current;
+                                        
+              cout <<  "[address: " << hex << &node << "] " << node.getName(); 
+              
+              if (dynamic_cast<const Directory*>(&node) ) {
                   
                  cout << " is a Directory ";
                   
