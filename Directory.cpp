@@ -186,8 +186,29 @@ void Directory::print(ostream& ostr) const
     // print children info
     Directory *pDir = const_cast<Directory *>(this);
     
-    Directory::CompositeIterator  iter_current = pDir->begin_composite(); 
+    Directory::CompositeIterator  iter = pDir->begin_composite(); 
+    Directory::CompositeIterator  iter_end = pDir->end_composite(); 
                            
+    for(; iter != iter_end; ++iter)  {
+        
+          Node *pNode = *iter;
+          
+          cout << pNode->getName(); 
+          
+          if (dynamic_cast<Directory*>(pNode) ) {
+              
+             cout << " is a Directory ";
+              
+          } else {
+              
+              cout << " is a File ";
+          }
+          
+          cout << endl;
+           
+    }
+    
+    /*
     while (iter_current.hasNext()) {
         
           Node *pNode = iter_current.next();
@@ -206,7 +227,9 @@ void Directory::print(ostream& ostr) const
           cout << endl;
            
     }
+     */ 
 }
+
 // debug version prefixes address
 
 void Directory::print_debug(ostream& ostr) const
@@ -216,8 +239,29 @@ void Directory::print_debug(ostream& ostr) const
     // print children info
     Directory *pDir = const_cast<Directory *>(this);
     
-    Directory::CompositeIterator  iter_current = pDir->begin_composite(); 
-                           
+    Directory::CompositeIterator  iter = pDir->begin_composite(); 
+    Directory::CompositeIterator  iter_end = pDir->end_composite(); 
+    
+    for(; iter != iter_end; ++iter)  {
+        
+          Node *pNode = *iter;
+          
+          cout << "[address: " << pNode << "] " << pNode->getName(); 
+          
+          if (dynamic_cast<Directory*>(pNode) ) {
+              
+             cout << " is a Directory ";
+              
+          } else {
+              
+              cout << " is a File ";
+          }
+          
+          cout << endl;
+           
+    }
+    
+    /*                       
     while (iter_current.hasNext()) {
         
           Node *pNode = iter_current.next();
@@ -236,7 +280,9 @@ void Directory::print_debug(ostream& ostr) const
           cout << endl;
            
     }
+    */ 
 }
+ 
 /*
  * Non-recursive descend of composite 
  */
@@ -282,10 +328,10 @@ Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : 
 
 Directory::DirectoryIterator::DirectoryIterator(Directory& dir) : pDirectory(&dir) 
 {
-  pCurrentNode = pDirectory; 
   iters_stack.push(make_pair(dir.nodeList.begin(), dir.nodeList.end()) ); 
+  pCurrentNode = pDirectory; 
 }
-
+/*--
 Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const DirectoryIterator& rhs)
 {
   pCurrentNode = rhs.pCurrentNode;
@@ -293,115 +339,76 @@ Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const Dire
   iters_stack = rhs.iters_stack; 
   return *this;
 }
+*/
 
-/*
- * Note, 
- */
-/*
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
-   //
-   // We determine if two Directory iterators are identical if:
-   // 1. They refer to the same underlying Directory, implying we need a reference to the Directory 
-   // 2. their iterations are at the same element.
-   // 
-   if (pDirectory == rhs.pDirectory && pCurrentNode == rhs.pCurrentNode) {
-
-      return true;
-      
-   } else {
-
-      return false;
-   }   
-  
+ /*
+  * This will return 'true' for an end iterator where its pCurrentNode is 0.
+  */
+   return  iters_stack.empty() && pCurrentNode == rhs.pCurrentNode;
 }
-*/
+
+bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
+{
+    return !operator==(rhs);
+}
 
 Node &Directory::DirectoryIterator::operator *() const
 {
   return *pCurrentNode;
-/*  
-  if (!iters_stack.empty()) {
-      return **(iters_stack.top().first);
-  } 
- */ 
 }
 
 Node *Directory::DirectoryIterator::operator->() const
 {
   if (!iters_stack.empty()) {
-      /*
-      list<Node *>::iterator list_iter = iters_stack.top().first;
-      return *list_iter;
-      */
-  
-     // return *(iters_stack.top().first);
+
      return pCurrentNode;
   } 
 }
  
 Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++() 
 {
-  if (!iters_stack.empty()) {
-      
-     // stack::top returns a reference, so I want to use references
-     // pair<list<Node *>::iterator, list<Node*>::iterator>& pair_reference =  iters_stack.top(); 
-     // or this--right? 
-     list<Node *>::iterator& list_iter     = iters_stack.top().first; 
-     list<Node *>::iterator& list_iter_end = iters_stack.top().second; 
-     
-     /*
-      * We were popping the stack before we have completed the iteration of nodeList, so I move the code below in the else clause
-      * TODO:
-      * I think this method should be modeled after the HeadFirst CompositeIteraror's next() method.
-      */
- //--iters_stack.pop();  
+  if (iters_stack.empty()) {
 
-     if (list_iter != list_iter_end) { 
-
-        /*
-         * The ctor sets pCurrentNode to this->pDirectory. Therefore we have yet to visit the first node of this->nodeList. So we advance the iterator
-         * after setting pCurrentNode.
-         * Question: Is list_iter just a local variable and there differs from the iterator on the stack? Maybe I really need a reference to
-         * the iterator on the stack.
-         */ 
-        pCurrentNode = *list_iter; 
-        ++list_iter; // <-- local variable. bug?
-       
-
-        if (dynamic_cast<Directory *>(pCurrentNode)) {
-
-            // If Directory, push it onto stack
-            Directory *pDir = static_cast<Directory *>(*list_iter);
-            
-            iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
-        }  
-
-     } else {
-         
-        // We have finished iterating the nodeList of the current directory, so we take it off the stack.
-         iters_stack.pop();  
-         
-        // To resume processing the directory immediately above, we simply make a recursive call.
-         this->DirectoryIterator::operator++();
-     }
-
+        pCurrentNode = 0;
 
   } else {
 
-      pCurrentNode = 0;
-  }
+	list<Node*>::iterator& list_iter     = iters_stack.top().first;
+	list<Node*>::iterator& list_iter_end = iters_stack.top().second;
+        
+	 if (list_iter == list_iter_end) {
 
+	     iters_stack.pop();
+
+	     return this->operator++(); // recurse
+
+	} else {
+              /* pCurrentNode was set to "this" in ctor. We need to always first dereference the list iterator before
+               * advancing it. */
+              
+              pCurrentNode = *list_iter; 
+              ++list_iter;  
+
+              if (dynamic_cast<Directory *>(pCurrentNode)) {
+
+                  Directory *pDir = static_cast<Directory *>(pCurrentNode);
+                  iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
+              }
+	}
+  }
+  
   return *this;
 }
 
 Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
 {
-   DirectoryIterator temp(*this);
+   DirectoryIterator tmp(*this);
    
    ++*this;
    
-   return temp;
+   return tmp;
 }
 
 Directory::ConstDirectoryIterator::ConstDirectoryIterator() : pDirectory(0), pCurrentNode(0), iters_stack()
