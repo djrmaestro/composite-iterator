@@ -277,4 +277,11 @@ inline Directory::CompositeIterator Directory::end_composite()
 {
     return CompositeIterator();
 }
+
+inline Node *Directory::CompositeIterator::operator*()
+{
+   // Initially set in constructor. Thereafter set by operator++(). 
+   return pCurrentNode;
+}
+
 #endif
