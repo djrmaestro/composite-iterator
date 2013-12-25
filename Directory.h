@@ -24,38 +24,8 @@ class Directory : public Node {
 
     friend class DirectoryIterator;
     friend class ConstDirectoryIterator;
-    friend class CompositeIterator; // <-- remove later
 
   public:
-
-      // nested test iterator classes
-     class CompositeIterator : public std::iterator<std::forward_iterator_tag, Node *> { 
-   
-          friend class Directory;
-          
-          std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
-          
-          Node *pCurrentNode;         
-          Directory *pDirectory;  // The top level directory which will be iterated.
-                  
-        public:
-                
-          explicit CompositeIterator(Directory & dir); 
-
-          // Required forward iterator methods follow
-          CompositeIterator();                          
-          CompositeIterator(const CompositeIterator&);
-          CompositeIterator& operator=(const CompositeIterator& other);
-          
-          Node *next();
-          bool hasNext();
-                    
-          bool operator==(const CompositeIterator& rhs);
-          bool operator!=(const CompositeIterator& rhs);
-          CompositeIterator& operator++();
-          CompositeIterator  operator++(int);
-          Node  *operator*();
-     };
 
      // nested iterator classes
      class DirectoryIterator : public std::iterator<std::forward_iterator_tag, Node *> { 
@@ -75,13 +45,11 @@ class Directory : public Node {
           DirectoryIterator();                          
           DirectoryIterator(const DirectoryIterator&);
           DirectoryIterator& operator=(const DirectoryIterator& other);
-          
-       /* 
-          Node *operator*() const;  // could return pair<Node *, boo>, where bool indicates whether Node * is a composite. 
-          Node **operator->() const; //  std::__addressof(static_cast<_Node*>
-        */  
-
-          Node &operator*() const;  // could return pair<Node *, boo>, where bool indicates whether Node * is a composite. 
+           
+          Node *next();
+          bool hasNext();
+           
+          Node &operator*() const;  
           Node *operator->() const; 
           DirectoryIterator& operator++();
           DirectoryIterator operator++(int);
@@ -121,10 +89,10 @@ class Directory : public Node {
           bool operator==(const ConstDirectoryIterator& x) const;
           bool operator!=(const ConstDirectoryIterator& x) const;
      };
-     
+    /* 
     CompositeIterator begin_composite();
     CompositeIterator end_composite();
-    
+    */
     typedef DirectoryIterator iterator;   
     typedef ConstDirectoryIterator const_iterator;   
     
@@ -267,7 +235,7 @@ template<typename F> void Directory::DescendNoStack_new(F f) //const
   } 
 }
 
-
+/*
 inline Directory::CompositeIterator::CompositeIterator() : iters_stack(), pDirectory(0), pCurrentNode(0)
 {
 }
@@ -281,6 +249,25 @@ inline Node *Directory::CompositeIterator::operator*()
 {
    // Initially set in constructor. Thereafter set by operator++(). 
    return pCurrentNode;
+}
+*/
+inline Node &Directory::DirectoryIterator::operator *() const
+{
+  return *pCurrentNode;
+}
+
+inline Directory::DirectoryIterator::DirectoryIterator() : pDirectory(0), pCurrentNode(0), iters_stack()
+{
+}        
+
+inline Directory::DirectoryIterator Directory::begin()
+{
+    return DirectoryIterator(*this); 
+}
+
+inline Directory::DirectoryIterator Directory::end()
+{
+    return DirectoryIterator(); 
 }
 
 #endif

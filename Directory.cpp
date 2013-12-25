@@ -13,13 +13,12 @@ void Directory::add(Node *pNode) throw(UnsupportedOperationException)
     nodeList.push_back(pNode);
 }
 
-// 
+/* 
 Directory::CompositeIterator Directory::begin_composite()
 {
     return CompositeIterator(*this); 
 }
 
-/*
 bool Directory::CompositeIterator::hasNext()
 {
    if (iters_stack.empty()) {
@@ -68,7 +67,7 @@ Node *Directory::CompositeIterator::next()
      return 0;
   }
 }
-*/
+
 Directory::CompositeIterator::CompositeIterator(Directory &dir)
 {
    pDirectory = &dir; 
@@ -96,8 +95,8 @@ Directory::CompositeIterator&  Directory::CompositeIterator::operator++()
 	     return this->operator++(); // recurse
 
 	} else {
-              /* pCurrentNode was set to "this" in ctor. We need to always first dereference the list iterator before
-               * advancing it. */
+              // pCurrentNode was set to "this" in ctor. We need to always first dereference the list iterator before
+              // advancing it. 
               
               pCurrentNode = *list_iter; 
               ++list_iter;  
@@ -126,9 +125,7 @@ Directory::CompositeIterator  Directory::CompositeIterator::operator++(int)
 
 bool Directory::CompositeIterator::operator==(const CompositeIterator& rhs)
 {
- /*
-  * This will return 'true' for an end iterator where its pCurrentNode is 0.
-  */
+  // This will return 'true' for an end iterator where its pCurrentNode is 0.
    return  iters_stack.empty() && pCurrentNode == rhs.pCurrentNode;
 }
 
@@ -136,17 +133,8 @@ bool Directory::CompositeIterator::operator!=(const CompositeIterator& rhs)
 {
     return !operator==(rhs);
 }
+*/
 
-// Start prior code
-Directory::iterator Directory::begin()
-{
-    return DirectoryIterator(*this); 
-}
-
-Directory::iterator Directory::end()
-{
-    return DirectoryIterator(); 
-}
 
 Directory::const_iterator Directory::begin() const
 {
@@ -157,6 +145,56 @@ Directory::const_iterator Directory::end() const
 {
     return ConstDirectoryIterator(); 
 }
+/*
+bool Directory::DirectoryIterator::hasNext()
+{
+   if (iters_stack.empty()) {
+
+	return false;
+
+   } else {
+
+	pair<list<Node*>::iterator, list<Node*>::iterator>& pair_ = iters_stack.top();
+        list<Node*>::iterator& list_iter = pair_.first;
+        list<Node*>::iterator& list_iter_end = pair_.second;
+
+	 if (list_iter == list_iter_end) {
+
+	     iters_stack.pop();
+
+	     return hasNext();
+
+	} else {
+
+	      return true;
+	}
+   }
+}
+
+Node *Directory::DirectoryIterator::next()
+{
+  if (hasNext()) {
+
+        list<Node*>::iterator& list_iter = iters_stack.top().first;
+        list<Node*>::iterator& list_iter_end = iters_stack.top().second;
+
+        Node *pNode = *list_iter;
+        ++list_iter; 
+
+        if (dynamic_cast<Directory *>(pNode)) {
+
+             Directory *pDir = static_cast<Directory *>(pNode);
+             iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
+        }
+
+        return pNode; 
+ 
+  } else {
+
+     return 0;
+  }
+}
+*/
 
 // Since destructor is virtual, this will trigger a recursive descent
 Directory::~Directory()
@@ -181,21 +219,17 @@ Directory::~Directory()
  */
 void Directory::print(ostream& ostr) const
 {
-    ostr << getName() << "\n";
-
-    // print children info
     Directory *pDir = const_cast<Directory *>(this);
-    
-    Directory::CompositeIterator  iter = pDir->begin_composite(); 
-    Directory::CompositeIterator  iter_end = pDir->end_composite(); 
+    Directory::iterator  iter = pDir->begin(); 
+    Directory::iterator  iter_end = pDir->end(); 
                            
     for(; iter != iter_end; ++iter)  {
         
-          Node *pNode = *iter;
+          Node &node = *iter;
           
-          cout << pNode->getName(); 
+          cout << node.getName(); 
           
-          if (dynamic_cast<Directory*>(pNode) ) {
+          if (dynamic_cast<Directory*>(&node) ) {
               
              cout << " is a Directory ";
               
@@ -225,7 +259,7 @@ void Directory::print(ostream& ostr) const
           }
           
           cout << endl;
-           
+       
     }
      */ 
 }
@@ -234,21 +268,21 @@ void Directory::print(ostream& ostr) const
 
 void Directory::print_debug(ostream& ostr) const
 {
-    ostr << "[address: " << this << "] " << getName() << "\n";
+//--    ostr << "[address: " << this << "] " << getName() << "\n";
 
     // print children info
     Directory *pDir = const_cast<Directory *>(this);
     
-    Directory::CompositeIterator  iter = pDir->begin_composite(); 
-    Directory::CompositeIterator  iter_end = pDir->end_composite(); 
+    Directory::iterator  iter = pDir->begin(); 
+    Directory::iterator  iter_end = pDir->end(); 
     
     for(; iter != iter_end; ++iter)  {
         
-          Node *pNode = *iter;
+          Node &node = *iter;
           
-          cout << "[address: " << pNode << "] " << pNode->getName(); 
+          cout << "[address: " << &node << "] " << node.getName(); 
           
-          if (dynamic_cast<Directory*>(pNode) ) {
+          if (dynamic_cast<Directory*>(&node) ) {
               
              cout << " is a Directory ";
               
@@ -286,7 +320,6 @@ void Directory::print_debug(ostream& ostr) const
 /*
  * Non-recursive descend of composite 
  */
-//void Directory::Descend(Directory *pdir, string path) const
 Node *Directory::Descend(Directory *pdir, string path) const
 {
     list<Node *>::iterator list_iter = pdir->nodeList.begin();
@@ -316,10 +349,6 @@ Node *Directory::Descend(Directory *pdir, string path) const
     
     return 0;
 }
-
-Directory::DirectoryIterator::DirectoryIterator() : pDirectory(0), pCurrentNode(0), iters_stack()
-{
-}        
 
 Directory::DirectoryIterator::DirectoryIterator(const DirectoryIterator& rhs) : pDirectory(rhs.pDirectory), pCurrentNode(rhs.pCurrentNode),
         iters_stack(rhs.iters_stack) 
@@ -354,10 +383,6 @@ bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) cons
     return !operator==(rhs);
 }
 
-Node &Directory::DirectoryIterator::operator *() const
-{
-  return *pCurrentNode;
-}
 
 Node *Directory::DirectoryIterator::operator->() const
 {
