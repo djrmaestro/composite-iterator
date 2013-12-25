@@ -32,7 +32,12 @@ Directory::CompositeIterator Directory::end_composite()
 Directory::CompositeIterator::CompositeIterator(Directory &dir)
 {
    pDirectory = &dir; 
+
    iters_stack.push(make_pair(  dir.nodeList.begin(), dir.nodeList.end() ));
+
+   // set pCurrentNode
+   pCurrentNode = *iters_stack.top().first;
+   
 }
 
 bool Directory::CompositeIterator::hasNext()
@@ -99,7 +104,7 @@ Node *Directory::CompositeIterator::next()
      return 0;
   }
 }
-bool Directory::CompositeIterator::operator==(const CompositeIterator& rhs) const
+bool Directory::CompositeIterator::operator==(const CompositeIterator& rhs)
 {
  /*
   * This will return 'true' for an end iterator where its pCurrentNode is 0.
@@ -107,7 +112,7 @@ bool Directory::CompositeIterator::operator==(const CompositeIterator& rhs) cons
    return  iters_stack.empty() && pCurrentNode == rhs.pCurrentNode;
 }
 
-bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
+bool Directory::CompositeIterator::operator!=(const CompositeIterator& rhs) 
 {
     return !operator==(rhs);
 }
@@ -158,6 +163,7 @@ Directory::CompositeIterator  Directory::CompositeIterator::operator++(int)
 
 Node *Directory::CompositeIterator::operator*()
 {
+   // We need to set pCurrentNode in the ctor. Initially it is not set. 
    return pCurrentNode;
 }
 
@@ -291,13 +297,14 @@ Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const Dire
 /*
  * Note, 
  */
+/*
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
-   /*
-    We determine if two Directory iterators are identical if:
-    1. They refer to the same underlying Directory, implying we need a reference to the Directory 
-    2. their iterations are at the same element.
-   */ 
+   //
+   // We determine if two Directory iterators are identical if:
+   // 1. They refer to the same underlying Directory, implying we need a reference to the Directory 
+   // 2. their iterations are at the same element.
+   // 
    if (pDirectory == rhs.pDirectory && pCurrentNode == rhs.pCurrentNode) {
 
       return true;
@@ -308,17 +315,8 @@ bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) cons
    }   
   
 }
-
-/*
-Node *Directory::DirectoryIterator::operator *() const
-{
-  if (!iters_stack.empty()) {
-
-      list<Node *>::iterator list_iter = iters_stack.top().first;
-      return *list_iter;
-  } 
-}
 */
+
 Node &Directory::DirectoryIterator::operator *() const
 {
   return *pCurrentNode;

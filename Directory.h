@@ -52,8 +52,8 @@ class Directory : public Node {
           bool hasNext();
 
           // new but untested
-          bool operator==(const CompositeIterator& rhs) const;
-          bool operator!=(const CompositeIterator& rhs) const;
+          bool operator==(const CompositeIterator& rhs);
+          bool operator!=(const CompositeIterator& rhs);
           CompositeIterator& operator++();
           CompositeIterator  operator++(int);
           Node  *operator*();
