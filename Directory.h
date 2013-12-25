@@ -50,6 +50,13 @@ class Directory : public Node {
           CompositeIterator& operator=(const CompositeIterator& other);
           Node *next();
           bool hasNext();
+
+          // new but untested
+          bool operator==(const CompositeIterator& rhs) const;
+          bool operator!=(const CompositeIterator& rhs) const;
+          CompositeIterator& operator++();
+          CompositeIterator  operator++(int);
+          Node  *operator*();
      };
 
      // nested iterator classes

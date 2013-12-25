@@ -103,6 +103,67 @@ Node *Directory::CompositeIterator::next()
      return 0;
   }
 }
+bool Directory::CompositeIterator::operator==(const CompositeIterator& rhs) const
+{
+ /*
+  * This will return 'true' for an end iterator where its pCurrentNode is 0.
+  */
+   return  iters_stack.empty() && pCurrentNode == rhs.pCurrentNode;
+}
+
+bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
+{
+    return !operator==(rhs);
+}
+
+Directory::CompositeIterator&  Directory::CompositeIterator::operator++()
+{
+  if (iters_stack.empty()) {
+
+        pCurrentNode = 0;
+
+  } else {
+
+	list<Node*>::iterator& list_iter     = iters_stack.top().first;
+	list<Node*>::iterator& list_iter_end = iters_stack.top().second;
+
+	 if (list_iter == list_iter_end) {
+
+	     iters_stack.pop();
+
+	     return operator++();
+
+	} else {
+               
+              pCurrentNode = *list_iter;
+              ++list_iter;  
+
+              if (dynamic_cast<Directory *>(pCurrentNode)) {
+
+                  Directory *pDir = static_cast<Directory *>(pCurrentNode);
+                  iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
+              }
+	}
+  } 
+
+}
+// culprit along with operator++(int_
+Directory::CompositeIterator::CompositeIterator(const CompositeIterator& rhs) : iters_stack(rhs.iters_stack), pCurrentNode(rhs.pCurrentNode)
+{
+}
+
+Directory::CompositeIterator  Directory::CompositeIterator::operator++(int)
+{
+   CompositeIterator tmp(*this);
+   this->operator++();
+   return tmp; 
+}
+
+Node *Directory::CompositeIterator::operator*()
+{
+   return pCurrentNode;
+}
+
 /////////////
 Directory::iterator Directory::begin()
 {
@@ -251,10 +312,6 @@ bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) cons
   
 }
 
-bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
-{
-    return !operator==(rhs);
-}
 /*
 Node *Directory::DirectoryIterator::operator *() const
 {
