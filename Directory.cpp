@@ -136,8 +136,8 @@ Directory::CompositeIterator&  Directory::CompositeIterator::operator++()
 
 	} else {
                
-              pCurrentNode = *list_iter;
               ++list_iter;  
+              pCurrentNode = *list_iter;
 
               if (dynamic_cast<Directory *>(pCurrentNode)) {
 
