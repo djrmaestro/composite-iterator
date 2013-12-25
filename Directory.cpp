@@ -123,7 +123,7 @@ Directory::CompositeIterator&  Directory::CompositeIterator::operator++()
 
 	     iters_stack.pop();
 
-	     return operator++(); // recurse
+	     return this->operator++(); // recurse
 
 	} else {
                
