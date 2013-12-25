@@ -303,4 +303,10 @@ inline bool Directory::ConstDirectoryIterator::operator!=(const ConstDirectoryIt
 {
      return inner_iter != x.inner_iter; 
 }
+inline Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator=(const ConstDirectoryIterator& rhs)
+{
+    inner_iter = rhs.inner_iter;
+    return *this;
+}
+       
 #endif
