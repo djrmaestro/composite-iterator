@@ -76,10 +76,6 @@ class Directory : public Node {
           ConstDirectoryIterator(const ConstDirectoryIterator&);
           ConstDirectoryIterator& operator=(const ConstDirectoryIterator& other);
           
-/*   Prefer reference to pointer
-          const Node *operator*() const; 
-          const Node **operator->() const;
-*/          
           const Node &operator*() const; 
           const Node *operator->() const;  
 
@@ -89,10 +85,7 @@ class Directory : public Node {
           bool operator==(const ConstDirectoryIterator& x) const;
           bool operator!=(const ConstDirectoryIterator& x) const;
      };
-    /* 
-    CompositeIterator begin_composite();
-    CompositeIterator end_composite();
-    */
+    
     typedef DirectoryIterator iterator;   
     typedef ConstDirectoryIterator const_iterator;   
     
@@ -268,6 +261,17 @@ inline Directory::DirectoryIterator Directory::begin()
 inline Directory::DirectoryIterator Directory::end()
 {
     return DirectoryIterator(); 
+}
+
+inline bool Directory::DirectoryIterator::operator!=(const DirectoryIterator& rhs) const
+{
+    return !operator==(rhs);
+}
+
+inline const Node &Directory::ConstDirectoryIterator::operator *() const
+{
+  return *pCurrentNode;
+    
 }
 
 #endif
