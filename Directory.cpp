@@ -21,6 +21,8 @@ Directory::CompositeIterator Directory::begin_composite()
 {
     return CompositeIterator(*this); 
 }
+
+
 /*
 Directory::CompositeIterator Directory::end_composite()
 {
@@ -33,13 +35,7 @@ Directory::CompositeIterator::CompositeIterator(Directory &dir)
    iters_stack.push(make_pair(  dir.nodeList.begin(), dir.nodeList.end() ));
 }
 
-Directory::CompositeIterator::CompositeIterator()
-{
-   pDirectory = 0; 
-}
-
 bool Directory::CompositeIterator::hasNext()
-
 {
    if (iters_stack.empty()) {
 
@@ -144,8 +140,9 @@ Directory::CompositeIterator&  Directory::CompositeIterator::operator++()
                   iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
               }
 	}
-  } 
-
+  }
+  
+  return *this;
 }
 // culprit along with operator++(int_
 Directory::CompositeIterator::CompositeIterator(const CompositeIterator& rhs) : iters_stack(rhs.iters_stack), pCurrentNode(rhs.pCurrentNode)

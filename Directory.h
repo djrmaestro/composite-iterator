@@ -125,7 +125,7 @@ class Directory : public Node {
      };
      
     CompositeIterator begin_composite();
-    //--CompositeIterator end_composite();
+    CompositeIterator end_composite();
     
     typedef DirectoryIterator iterator;   
     typedef ConstDirectoryIterator const_iterator;   
@@ -269,4 +269,12 @@ template<typename F> void Directory::DescendNoStack_new(F f) //const
 }
 
 
+inline Directory::CompositeIterator::CompositeIterator() : iters_stack(), pDirectory(0), pCurrentNode(0)
+{
+}
+
+inline Directory::CompositeIterator Directory::end_composite() 
+{
+    return CompositeIterator();
+}
 #endif
