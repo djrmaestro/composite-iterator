@@ -1,7 +1,7 @@
 #ifndef  Directory_H_121223013
 #define  Directory_H_121223013
 #include <iosfwd>
-#include <iostream> // temporarily
+#include <iostream> 
 #include <list>
 #include <string>
 #include <stack>
@@ -17,10 +17,10 @@ class Directory : public Node {
     Node *Descend(Directory *pdir, std::string path) const;
 
     /*
-     * Note: To make these functions template member functions, you must include the definition also in this header file.
+     * Note: To implement these functions template member functions, you must include the definition also in this header file.
      */
-    template<typename F> void DescendNoStack(F); //const; 
-    template<typename F> void DescendNoStack_new(F f); //const
+    template<typename F> void DescendNonRecursive(F); //const; 
+    template<typename F> void DescendNonRecursive_new(F f); //const
 
     friend class DirectoryIterator;
     friend class ConstDirectoryIterator;
@@ -35,7 +35,7 @@ class Directory : public Node {
           std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
           
           Node *pCurrentNode;         
-          Directory *pDirectory;  // The top level directory which will be iterated.
+          Directory *pDirectory;  // This is the top level directory which will be iterated.
                   
         public:
                 
@@ -45,10 +45,10 @@ class Directory : public Node {
           DirectoryIterator();                          
           DirectoryIterator(const DirectoryIterator&);
           DirectoryIterator& operator=(const DirectoryIterator& other);
-           
+          /* 
           Node *next();
           bool hasNext();
-           
+          */ 
           Node &operator*() const;  
           Node *operator->() const; 
           DirectoryIterator& operator++();
@@ -104,8 +104,7 @@ class Directory : public Node {
     // I guess this means immediate children only not grandchildren
     virtual Node *getChild(int i) throw(UnsupportedOperationException)
     {
-       // TO DO: Change to work with list
-       //  return nodeList.at(i); 
+       // TO DO: Change to work with list:  return nodeList.at(i); 
         return 0;
     }
     
@@ -129,12 +128,12 @@ class Directory : public Node {
  
 template<typename F> inline void Directory::traverse(F f) //--const
 {
-    DescendNoStack_new(f);
+    DescendNonRecursive_new(f);
 }
 
 //TODO: I think pDir should perhaps be set immediately after the while loop?
 
-template<typename F> void Directory::DescendNoStack(F f) //const
+template<typename F> void Directory::DescendNonRecursive(F f) //const
 {
   std::string path = "./"; // Put in DirectoryPrinter.cpp
 
@@ -181,7 +180,7 @@ template<typename F> void Directory::DescendNoStack(F f) //const
   } 
 }
 
-template<typename F> void Directory::DescendNoStack_new(F f) //const
+template<typename F> void Directory::DescendNonRecursive_new(F f) //const
 {
   std::string path_prefix = "./"; // Put in DirectoryPrinter.cpp
 
