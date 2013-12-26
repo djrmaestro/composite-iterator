@@ -74,7 +74,7 @@ Node *Directory::DirectoryIterator::next()
 }
 */
 
-// Since destructor is virtual, this will trigger a recursive descent
+//  Since base class destructor is virtual, this will cause recursive descent
 Directory::~Directory()
 {
   list<Node*>::iterator list_iter     = nodeList.begin();
@@ -87,7 +87,7 @@ Directory::~Directory()
 }
 
 /*
-  This prints in-order. Thus, if dir1 and dir2 were added to top before top_f1, the output will look like
+  prints in-order. Thus, if dir1 and dir2 were added to top/ before file top_f1, the output will look like:
   top/
   top/dir1
   top/dir1/dir_f1
@@ -117,13 +117,10 @@ void Directory::print(ostream& ostr) const
           }
           
           cout << endl;
-           
     }
-       
 }
 
 // debug version prefixes address
-
 void Directory::print_debug(ostream& ostr) const
 {
     // print children info
@@ -148,9 +145,7 @@ void Directory::print_debug(ostream& ostr) const
           }
           
           cout << endl;
-           
     }
-  
 }
  
 /*
@@ -176,7 +171,7 @@ Node *Directory::Descend(Directory *pdir, string path) const
                Directory *p = static_cast<Directory *>(pNode);
                Descend(p, path);
                
-         } else { // output file name preceeded by path
+         } else { 
              
             return pNode; 
          }   
@@ -207,7 +202,7 @@ Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const Dire
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
  /*
-  * This will return 'true' for an end iterator where its pCurrentNode is 0.
+  * This will return 'true' for an end iterator where rhs.pCurrentNode is 0.
   */
    return  iters_stack.empty() && pCurrentNode == rhs.pCurrentNode;
 }
@@ -217,6 +212,10 @@ Node *Directory::DirectoryIterator::operator->() const
   if (!iters_stack.empty()) {
 
      return pCurrentNode;
+
+  } else {
+
+     return 0;
   } 
 }
  
@@ -238,8 +237,7 @@ Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++()
 	     return this->operator++(); // recurse
 
 	} else {
-              /* pCurrentNode was set to "this" in ctor. We need to always first dereference the list iterator before
-               * advancing it. */
+              /* pCurrentNode initiallyt to this->pDirectory in ctor. */
               
               pCurrentNode = *list_iter; 
               ++list_iter;  
@@ -258,62 +256,13 @@ Directory::DirectoryIterator&  Directory::DirectoryIterator::operator++()
 Directory::iterator  Directory::DirectoryIterator::operator++(int) //postfix
 {
    DirectoryIterator tmp(*this);
-   
    ++*this;
-   
    return tmp;
 }
 
-
-Directory::ConstDirectoryIterator Directory::ConstDirectoryIterator::operator++(int)
+Directory::ConstDirectoryIterator Directory::ConstDirectoryIterator::operator++(int) //postfix
 {
-    ConstDirectoryIterator tmp(*this);
-   
+   ConstDirectoryIterator tmp(*this);
    ++*this;
-   
    return tmp;
 }
-
-/*
-void Directory::DescendNoStack() //const
-{
-  string path = "./";
-  
-  stack< pair< list<Node *>::iterator, list<Node *>::iterator> >  iters_stack;
-  
-  iters_stack.push(make_pair(nodeList.begin(), nodeList.end()) );
-
-  while(!iters_stack.empty()) {
-      
-     pair< list<Node *>::iterator, list<Node *>::iterator >  top = iters_stack.top(); 
-     iters_stack.pop();
-     
-     list<Node *>::iterator list_iter     = top.first; 
-     list<Node *>::iterator list_iter_end = top.second; 
- 
-    //string dir_name = pdir->getName();
-     string dir_name = (*list_iter)->getName();
-                
-     path += dir_name + string("/");
-        
-     cout << path << "\n";
-
-     for (;list_iter != list_iter_end; list_iter++) {
-
-        Node *pNode = *list_iter;
-      
-        if (dynamic_cast<Directory *>(pNode)) {
-
-            // If Directory, push it onto stack
-            Directory *pDir = static_cast<Directory *>(pNode);
-            
-            iters_stack.push( make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) );
-            
-        } else { // output file name preceeded by path
-          
-            cout << path << *pNode << endl; 
-        }   
-     }
-  } 
-}
-*/
