@@ -47,32 +47,7 @@ int main(int argc, char** argv)
         top.add(psubdir_mid);
 
         top.print(cout); // print top level directory and its children
-         
-        // print children info
-        /* Directory::print() already do what this code is doing
-        Directory::CompositeIterator  iter_current = top.begin_composite(); 
-                               
-        while (iter_current.hasNext()) {
-            
-              Node *pNode = iter_current.next();
-              
-              cout << pNode->getName(); 
-              
-              if (dynamic_cast<Directory*>(pNode) ) {
-                  
-                 cout << " is a Directory ";
-                  
-              } else {
-                  
-                  cout << " is a File ";
-              }
-              
-              cout << endl;
-               
-        }
-       */
-        
-        // Debug version
+                      
         cout << "\n ============= \n" << endl;
 
         Directory::iterator iter_current = top.begin();
@@ -96,7 +71,7 @@ int main(int argc, char** argv)
               cout << endl;
         }
         
-        cout << "\n Testing Directory::const_iterator ====\n";
+        cout << "\n ===== Testing Directory::const_iterator ===:==\n";
         
         const Directory& const_top = top;
         
@@ -120,14 +95,7 @@ int main(int argc, char** argv)
               
               cout << endl;
         }
-        // 
-         
-        /* 
-        cout << "\n Doing top.traverse(do_nothing) " << endl;
-        top.traverse(do_nothing);
-        */
-          
-    
+            
     } catch (Node::UnsupportedOperationException& e) {
             
           cout <<  e.what();
