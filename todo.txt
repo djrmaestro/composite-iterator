@@ -1,2 +1,0 @@
-ConstDirectoryIterator blows up, but DirectoryIterator seems to work out. So there is some
-discrepency between them.
