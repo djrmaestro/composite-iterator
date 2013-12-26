@@ -201,33 +201,25 @@ Directory::DirectoryIterator& Directory::DirectoryIterator::operator=(const Dire
 
 bool Directory::DirectoryIterator::operator==(const DirectoryIterator& rhs) const
 {
- /*
-  * This will return 'true' for an end iterator where rhs.pCurrentNode is 0.
-  */
-   //--return  iters_stack.empty() && pCurrentNode == rhs.pCurrentNode;
-
-  /* new code:
+ /* 
   * pCurentNode is only set to 0 when we we have iterated over the entire composite. It is also implies iters_stack.empty() will be true, so
   * we do not have to separately check for that here.  
   */
-   /*
    
-    */
-    bool bReturn;
-    if (rhs.pDirectory == 0) { // implies this is an end() iterator...
-        // ...and simply need to check that pCurrentNode is 0, which only occurs when iters_stack is empty and we have iterated
-        // over the entire composite
-        bReturn = pCurrentNode == 0;
+  bool bReturn;
+  if (rhs.pDirectory == 0) { // implies this is an end() iterator...
+      // ...and simply need to check that pCurrentNode is 0, which only occurs when iters_stack is empty and we have iterated
+      // over the entire composite
+      bReturn = pCurrentNode == 0;
         
-    } else { // otherwise, we need to check that we 
-        // 1. are iterating over the same composite: pDirectory == rhs.pDirectory, and
-        // 2. we are at the same Node.
+  } else { // otherwise, we need to check that 
+     // 1. are iterating over the same composite: pDirectory == rhs.pDirectory, and
+     // 2. we are at the same Node.
         
-       bool bReturn = (pDirectory == rhs.pDirectory && pCurrentNode == rhs.pCurrentNode);
+     bool bReturn = (pDirectory == rhs.pDirectory && pCurrentNode == rhs.pCurrentNode);
    }
     
    return bReturn; 
-
 }
 
 Node *Directory::DirectoryIterator::operator->() const
