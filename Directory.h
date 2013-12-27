@@ -119,16 +119,16 @@ class Directory : public Node {
 };
 
 // recursive generic method
-template<typename F> void Directory::DoRecursive(F& f, const Directory *pdir, std::string path)
+template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir, std::string parent_path)
 {
     std::list<Node *>::iterator list_iter = const_cast<Directory *>(pdir)->nodeList.begin();
     std::list<Node *>::iterator end_iter  = const_cast<Directory *>(pdir)->nodeList.end();
     
     std::string dir_name = pdir->getName();
                 
-    path += dir_name + "/";
-        
-    f(pdir, path);     
+    func(pdir, parent_path);     
+    
+    parent_path += dir_name + "/";
 
     for (; list_iter != end_iter; ++list_iter) {
         
@@ -137,15 +137,14 @@ template<typename F> void Directory::DoRecursive(F& f, const Directory *pdir, st
          if (dynamic_cast<Directory *>(pNode)) {
 
                Directory *p = static_cast<Directory *>(pNode);
-               DoRecursive(f, p, path);
+               DoRecursive(func, p, parent_path);
                               
          } else { 
              
-            f(pNode, path);
+            func(pNode, parent_path);
          }   
     }
 }
-
 template<typename F> void Directory::Recursive(F& f) 
 {
    this->DoRecursive(f, const_cast<Directory *>(this), std::string("")); // const_cast ist a hack
