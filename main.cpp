@@ -76,6 +76,13 @@ int main(int argc, char** argv)
    
         top.add(psubdir_mid);
         
+        File *ptop_f3 = new File(string("top-File3"), string("12-12-2013"));
+        
+        File *ptop_f4  = new File(string("top-File4"), string("12-10-2013"));
+        
+        top.add(ptop_f3);
+        top.add(ptop_f3);
+        
         cout << "\n ===== print recursively: top.Recursive(printer) =========== \n" << endl;
         Printer printer(cout);
 
