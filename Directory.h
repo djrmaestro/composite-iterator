@@ -1,4 +1,4 @@
-iifndef  Directory_H_121223013
+#ifndef  Directory_H_121223013
 #define  Directory_H_121223013
 #include <iosfwd>
 #include <iostream> 
@@ -14,16 +14,9 @@ class Directory : public Node {
     std::string name;
     std::string date_created;
 
-    Node *Descend(Directory *pdir, std::string path) const;
-
-    /*
-     * Note: To implement these functions template member functions, you must include the definition also in this header file.
-     */
-    template<typename F> void DescendNonRecursive(F); //const; 
-    template<typename F> void DescendNonRecursive_new(F f); //const
-
     friend class DirectoryIterator;
     friend class ConstDirectoryIterator;
+    template<typename F> void DoRecursive(F& f, Directory *pdir=0, std::string path=""); 
 
   public:
 
@@ -118,128 +111,48 @@ class Directory : public Node {
         return date_created;
     }
     
-    virtual void print(std::ostream&) const;
-
-    template<typename F> void traverse(F); //--const;
-        
     void print(Directory *pdir=0, std::string path= "") const;
+
+    template<typename F> void Recursive(F& f);
+    
     ~Directory();
 };
- 
-template<typename F> inline void Directory::traverse(F f) //--const
+
+// recursive generic method
+template<typename F> void Directory::DoRecursive(F& f, Directory *pdir, std::string path)
 {
-    DescendNonRecursive_new(f);
-}
-
-//TODO: I think pDir should perhaps be set immediately after the while loop?
-
-template<typename F> void Directory::DescendNonRecursive(F f) //const
-{
-  std::string path = "./"; // Put in DirectoryPrinter.cpp
-
-  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack; 
-  
-  // Initially we push the this->fileComponent's begin and end iterators onto the stack.
-  iters_stack.push(std::make_pair(this->nodeList.begin(), this->nodeList.end()) );
-
-  Directory *pdir = this; 
-
-  while(!iters_stack.empty()) {
-  
-     std::list<Node *>::iterator list_iter     = iters_stack.top().first; 
-     std::list<Node *>::iterator list_iter_end = iters_stack.top().second; 
- 
-     iters_stack.pop();
-  
-     std::string dir_name = pdir->getName(); // works
+    std::list<Node *>::iterator list_iter = pdir->nodeList.begin();
+    std::list<Node *>::iterator end_iter  = pdir->nodeList.end();
     
-      //--std::string dir_name = (*iter)->getName();
-     /* 
-      * Logic Error: path retains all subdirs added to it.  Also if pDir doesn't change, it still gets appended each time          
-      */ 
-     path += dir_name + std::string("/"); 
+    std::string dir_name = pdir->getName();
+                
+    path += dir_name + "/";
         
-     std::cout << path << "\n";
+    f(const_cast<Directory *>(pdir), path);     
+    //--cout << path << "\n";
 
-     for (;list_iter != list_iter_end; list_iter++) {
-
-        Node *pNode = *list_iter;
-      
-        if (dynamic_cast<Directory *>(pNode)) {
-
-            // If Directory, push its fileComponent begin and end iterators onto stack
-            Directory *pDir = static_cast<Directory *>(pNode);
-            
-            iters_stack.push(std::make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) ); 
-            
-        } else { // output file name preceeded by path
-           
-             std::cout << path << *pNode << std::endl; 
-        }   
-     }
-  } 
-}
-
-template<typename F> void Directory::DescendNonRecursive_new(F f) //const
-{
-  std::string path_prefix = "./"; // Put in DirectoryPrinter.cpp
-
-  std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack; 
-  
-  // Initially we push the this->fileComponent's begin and end iterators onto the stack.
-  iters_stack.push(std::make_pair(this->nodeList.begin(), this->nodeList.end()) );
-
-  std::string top_dir_name = this->getName() + "/";
-  
-  while(!iters_stack.empty()) {
-  
-     std::list<Node *>::iterator list_iter  = iters_stack.top().first; 
-     std::list<Node *>::iterator list_iter_end   = iters_stack.top().second; 
- 
-     iters_stack.pop();
-           
-     /* 
-      * Prior Logic Error: path retained all subdirs added to it. Subdir components were never removed.
-      */ 
-     std::string path = top_dir_name;
+    for (; list_iter != end_iter; ++list_iter) {
         
-     std::cout << path << "\n";
-
-     for (;list_iter != list_iter_end; list_iter++) {
+         Node *pNode = *list_iter;
          
-        Node *pNode = *list_iter;
-      
-        if (dynamic_cast<Directory *>(pNode)) {
+         if (dynamic_cast<Directory *>(pNode)) {
 
-            // If Directory, push its fileComponent begin and end iterators onto stack
-            Directory *pDir = static_cast<Directory *>(pNode);
-            
-            iters_stack.push(std::make_pair(pDir->nodeList.begin(), pDir->nodeList.end()) ); 
-            
-        } else { // output file name preceeded by path
-           
-             std::cout << path << *pNode << std::endl; 
-        }   
-     }
-  } 
+               Directory *p = static_cast<Directory *>(pNode);
+               DoRecursive(f, p, path);
+                              
+         } else { 
+             
+            //--cout << pNode->getName(); 
+            f(pNode);
+         }   
+    }
 }
 
-/*
-inline Directory::CompositeIterator::CompositeIterator() : iters_stack(), pDirectory(0), pCurrentNode(0)
+template<typename F> void Directory::Recursive(F& f) 
 {
+  this->DoRecursive(f, this, std::string(""));
 }
 
-inline Directory::CompositeIterator Directory::end_composite() 
-{
-    return CompositeIterator();
-}
-
-inline Node *Directory::CompositeIterator::operator*()
-{
-   // Initially set in constructor. Thereafter set by operator++(). 
-   return pCurrentNode;
-}
-*/
 inline Node &Directory::DirectoryIterator::operator *() const
 {
   return *pCurrentNode;

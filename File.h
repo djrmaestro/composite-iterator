@@ -29,6 +29,6 @@ class File : public Node {
     }
 
     // Called by Node::operator<<(ostream&)
-    virtual void print(std::ostream& ostr) const;
+    //--virtual void print(std::ostream& ostr) const;
 };
 #endif

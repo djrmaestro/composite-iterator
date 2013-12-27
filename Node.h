@@ -59,8 +59,6 @@ public:
 	throw UnsupportedOperationException();
     }
     
-    virtual void print(std::ostream&) const;
-    
     friend std::ostream& operator<<(std::ostream& ostr, const Node& c); 
         
     Node() {};
@@ -69,14 +67,9 @@ public:
    
 };
 
-inline void Node::print(std::ostream& ostr) const
-{
-   ostr << std::string("I am Node");
-}
-
 inline std::ostream& operator<<(std::ostream& ostr, const Node& c) 
 {
-    c.print(ostr);
+    ostr << std::string("This is class Node\n");
     return ostr;
 }
 #endif

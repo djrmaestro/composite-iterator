@@ -6,6 +6,31 @@
 
 using namespace std;
 
+class Printer {
+    ostream& ostr;
+    string path;
+    
+public:
+    
+   Printer(ostream& o) : ostr(o), path("") {};
+   
+   void operator()(Directory *pdir, string path);
+   
+   void operator()(Node *pdir) const;
+};
+
+void Printer::operator()(Directory *pdir, string path)
+{
+   this->path = path;
+   ostr << path << "\n";
+}
+
+void Printer::operator()(Node *pdir) const
+{
+   ostr << path << pdir->getName() << "\n";
+   return;  
+}
+
 int main(int argc, char** argv) 
 {
     
@@ -22,33 +47,46 @@ int main(int argc, char** argv)
         
         Directory *psubdir_mid = new Directory(string("subdir-mid"), string("12-10-2013"));
         
-        Directory *psubdir_lower = new Directory(string("subdir-lower"), string("12-10-2013"));
+        Directory *psubdir_lower1 = new Directory(string("subdir-lower1"), string("12-10-2013"));
         
-        File  *psubdir_lower_f1 = new File(string("subdir-lovwer-File1"), string("12-12-2013"));
+        File  *psubdir_lower1_f1 = new File(string("subdir-lower1-File1"), string("12-12-2013"));
         
-        File  *psubdir_lower_f2 = new File(string("subdir-lower-File2"), string("12-10-2013"));
+        File  *psubdir_lower1_f2 = new File(string("subdir-lower1-File2"), string("12-10-2013"));
         
-        psubdir_lower->add(psubdir_lower_f1);
-        psubdir_lower->add(psubdir_lower_f2);
+        psubdir_lower1->add(psubdir_lower1_f1);
+        psubdir_lower1->add(psubdir_lower1_f2);
               
-        psubdir_mid->add(psubdir_lower);
+        psubdir_mid->add(psubdir_lower1);
    
         File  *psubdir_mid_f1 = new File(string("subdir_mid-File1"), string("12-12-2013"));
         
-        File  *psubdir_mid_f2 = new File(string("subdir-mide_File2"), string("12-10-2013"));
+        File  *psubdir_mid_f2 = new File(string("subdir-mid_File2"), string("12-10-2013"));
      
         psubdir_mid->add(psubdir_mid_f1);
         psubdir_mid->add(psubdir_mid_f2);
+        
+        Directory *psubdir_lower2 = new Directory(string("subdir-lower2"), string("12-10-2013"));
+        
+        File  *psubdir_lower2_f1 = new File(string("subdir-lower2-File1"), string("12-12-2013"));
+        
+        File  *psubdir_lower2_f2 = new File(string("subdir-lower2-File2"), string("12-10-2013"));
+        
+        psubdir_lower2->add(psubdir_lower2_f1);
+        psubdir_lower2->add(psubdir_lower2_f2);
+        
+        psubdir_mid->add(psubdir_lower2);
    
         top.add(psubdir_mid);
-        cout << "\n ===== print recusrively: top.print(Directory *pdri. string path) =========== \n" << endl;
+        
+        cout << "\n ===== print recursively: top.Recursive(printer) =========== \n" << endl;
+        Printer printer(cout);
+
+        top.Recursive(printer);        
+                
+        cout << "\n ===== print using iterator: top.print() =========== \n" << endl;
 
         top.print(); // print top level directory and its children
         
-        cout << "\n ===== print using iterator: top.print(cout) =========== \n" << endl;
-
-        top.print(cout); // print top level directory and its children
-                      
         cout << "\n ============= \n" << endl;
 
         Directory::iterator iter_current = top.begin();
