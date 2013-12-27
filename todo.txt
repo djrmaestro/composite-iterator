@@ -1,2 +1,2 @@
-Directory::print() seems to work correctly. However, Directory::DoRecursive(F& f, Directory *pdir=0, std::string path="")
-, which is supposed to be a template member function that mimics Directory::print(), does not work correctly. 
+Directory::print() seems to work correctly. Further test Directory::DoRecursive(F& f, Directory *pdir=0, std::string path="")
+which is a template member function patterned after Directory::print.

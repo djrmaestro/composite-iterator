@@ -8,24 +8,22 @@ using namespace std;
 
 class Printer {
     ostream& ostr;
-    string path;
     
 public:
     
-   Printer(ostream& o) : ostr(o), path("") {};
+   Printer(ostream& o) : ostr(o) {};
    
-   void operator()(Directory *pdir, string path);
+   void operator()(const Directory *pdir, string path) const;
    
-   void operator()(Node *pdir) const;
+   void operator()(const Node *pdir, string path) const;
 };
 
-void Printer::operator()(Directory *pdir, string path)
+void Printer::operator()(const Directory *pdir, string path) const
 {
-   this->path = path;
    ostr << path << "\n";
 }
 
-void Printer::operator()(Node *pdir) const
+void Printer::operator()(const Node *pdir, string path) const
 {
    ostr << path << pdir->getName() << "\n";
    return;  
