@@ -1,4 +1,4 @@
-#ifndef  Directory_H_121223013
+iifndef  Directory_H_121223013
 #define  Directory_H_121223013
 #include <iosfwd>
 #include <iostream> 
@@ -119,10 +119,10 @@ class Directory : public Node {
     }
     
     virtual void print(std::ostream&) const;
-    virtual void print_debug(std::ostream&) const;
 
     template<typename F> void traverse(F); //--const;
         
+    void print(Directory *pdir=0, std::string path= "") const;
     ~Directory();
 };
  

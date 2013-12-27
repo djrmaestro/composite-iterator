@@ -6,10 +6,6 @@
 
 using namespace std;
 
-void do_nothing(Node *p) { }
-
-void do_something(Node *p) { }
-
 int main(int argc, char** argv) 
 {
     
@@ -45,6 +41,11 @@ int main(int argc, char** argv)
         psubdir_mid->add(psubdir_mid_f2);
    
         top.add(psubdir_mid);
+        cout << "\n ===== print recusrively: top.print(Directory *pdri. string path) =========== \n" << endl;
+
+        top.print(); // print top level directory and its children
+        
+        cout << "\n ===== print using iterator: top.print(cout) =========== \n" << endl;
 
         top.print(cout); // print top level directory and its children
                       
