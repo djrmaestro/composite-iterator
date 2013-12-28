@@ -151,7 +151,7 @@ template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir,
 }
 template<typename F> void Directory::Recursive(F& f) 
 {
-   this->DoRecursive(f, const_cast<Directory *>(this), std::string("")); // const_cast ist a hack
+   this->DoRecursive(f, this, std::string("")); // const_cast ist a hack
 }
 
 inline Node &Directory::DirectoryIterator::operator *() const
