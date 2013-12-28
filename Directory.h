@@ -149,7 +149,7 @@ template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir,
          }   
     }
 }
-template<typename F> void Directory::Recursive(F& f) 
+template<typename F> void Directory::Recursive(F& f)
 {
    this->DoRecursive(f, this, std::string("")); 
 }
