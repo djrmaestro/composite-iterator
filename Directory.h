@@ -113,7 +113,7 @@ class Directory : public Node {
     
     void print(Directory *pdir=0, std::string path= "") const;
 
-    template<typename F> void Recursive(F& f);
+    template<typename F> void traverse(F& f);
     
     ~Directory();
 };
@@ -149,7 +149,7 @@ template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir,
          }   
     }
 }
-template<typename F> void Directory::Recursive(F& f)
+template<typename F> void Directory::traverse(F& f)
 {
    this->DoRecursive(f, this, std::string("")); 
 }
