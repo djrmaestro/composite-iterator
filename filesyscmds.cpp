@@ -3,31 +3,31 @@
 #include "Directory.h"
 using namespace std;
 
-string head(const std::string& full_path)
+string head(const std::string& path)
 {
-   int slash_pos = full_path.find('/');
+   int slash_pos = path.find('/');
 
    if (slash_pos != string::npos) {
 
-       return full_path.substr(0, slash_pos - 1);
+       return path.substr(0, slash_pos - 1);
 
    } else {
 
-      return full_path;
+      return path;
   }
 }
 
-string subpath(const std::string& full_path)
+string subpath(const std::string& path)
 {
-   int slash_pos = full_path.find('/');
+   int slash_pos = path.find('/');
 
    if (slash_pos != string::npos) {
 
-       return full_path.substr(slash_pos - 1);
+       return path.substr(slash_pos - 1);
 
    } else {
 
-       return full_path;
+       return string(path);
    }
 }
 
@@ -66,7 +66,7 @@ void mkdir(Node *pCurrent, const string& path)
    
    string sub_path = subpath(path); // everything but the first name in the path
 
-   if (subpath.empty()) {
+   if (sub_path.empty()) {
 
         // The time is hardcode for now
         Directory *pDir = new Directory(path, std::string("10/10/2013")); 
@@ -80,7 +80,7 @@ void mkdir(Node *pCurrent, const string& path)
 
       if (pChild) {
 
-         mkdir(pChild, subpath);
+         mkdir(pChild, sub_path);
 
       } else {
 
