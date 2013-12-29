@@ -1,3 +1,8 @@
 Implement getChild(int) and implement find() using iterators?
 
 Use managed pointers instead of raw Node *. I believe the nodeList should hold shared_ptr and Node method should return a weak_ptr.
+
+Implement mkdir and find. find() only searches the immediate children.nd returns 0 otherwise.
+
+
+find() takes a Node *. If the client tries to add a subdir to a File, Node:getChild, which it inherits, will throw an exception.
