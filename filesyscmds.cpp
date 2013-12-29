@@ -32,9 +32,9 @@ string subpath(const std::string& full_path)
 }
 
 /*
- * pCurrentDir is the directory to search. 
+ * pCurrentDir is the directory to search.  
  * Note: If mkdir() passes a File* instead of a Directory* to find(), this will result in
- * an exception being thrown when File::getChild(int) is called.
+ * a node_logic_exception being thrown when File::getChild(int) is called.
  */
 Node *find(std::string& name, Node *pCurrent) // pCurrent is the Directory to search
 {
@@ -50,13 +50,23 @@ Node *find(std::string& name, Node *pCurrent) // pCurrent is the Directory to se
   } 
   return pChild;
 }
-
+/*
+ * We must handle not only cases like
+ *    mkdir newsubdir
+ * but also
+ *    mkdir subdirA/subdirB/newsubdir
+ * Logic in the later case is:
+ * 1. find subdirA (reporting and error if it doesn't exist)
+ * 2. find subdirB (reporting and error if it doesn't exist)
+ * 3. have subdirB add newsubdir to its children.
+ *
+ */
 void mkdir(Node *pCurrent, const string& path)
 {
    
-   string sub_path = subpath(path);
+   string sub_path = subpath(path); // everything but the first name in the path
 
-   if (sub_path.empty()) {
+   if (subpath.empty()) {
 
         // The time is hardcode for now
         Directory *pDir = new Directory(path, std::string("10/10/2013")); 
@@ -64,13 +74,13 @@ void mkdir(Node *pCurrent, const string& path)
       
    } else {
 
-      string name = head(path); // subpath
+      string name = head(path); // first name in the path
 
       Node *pChild = find(name, pCurrent);
 
       if (pChild) {
 
-         mkdir(pChild, sub_path);
+         mkdir(pChild, subpath);
 
       } else {
 
