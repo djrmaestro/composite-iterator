@@ -5,6 +5,7 @@ build/
 nbproject/
 menuiterator/
 README
+*.swp
 DirectoryIterator.h.backup
 DirectoryIterator.cpp.backup
 Directory.h.backup

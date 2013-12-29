@@ -140,7 +140,7 @@ int main(int argc, char** argv)
               cout << endl;
         }
             
-    } catch (Node::UnsupportedOperationException& e) {
+    } catch (Node::node_logic_error& e) {
             
           cout <<  e.what();
     }

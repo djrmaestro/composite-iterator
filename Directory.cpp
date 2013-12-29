@@ -1,14 +1,59 @@
 #include "Directory.h"
 #include <stack>
 #include <iostream>
+#include <iterator>
 
 using namespace std;
 
+// TODO: change this to return weak_ptr
+// Return the child, or 0 if not found.
+Node *Directory::getChild(int i) throw(node_logic_error, out_of_range)
+{
+    // check if i is in range
+    int size = nodeList.size();
+
+    if ( i >= size ) {
+        
+        throw out_of_range("i must be between 0 and size");
+    }
+
+    list<Node *>::iterator iter = nodeList.begin();
+    
+    Node *pNode = 0;
+    
+    for(int index = 0;  i != index; ++iter, ++index) {
+        
+           pNode = *iter;    
+    }
+
+    return pNode;
+}
+/*
+ * 
+ */
+void Directory::remove(Node *pNode) throw(node_logic_error, invalid_argument)
+{
+    // make sure it exists
+    list<Node *>::iterator iter = nodeList.begin();
+    list<Node *>::iterator iter_end = nodeList.end();
+    
+    for(; iter != iter_end; ++iter) {
+        
+           if (pNode == *(iter.operator->())) { // DirectoryIterator::operator->() returns Node **    
+               
+              nodeList.remove(pNode);
+              return;
+           } 
+    }
+
+    throw invalid_argument("The node at that address is not a child");
+}
+    
 Directory::Directory(const std::string& dir_name, const std::string& created) : name(dir_name), date_created(created)
 {    
 }
 
-void Directory::add(Node *pNode) throw(UnsupportedOperationException)
+void Directory::add(Node *pNode) throw(node_logic_error)
 {
     nodeList.push_back(pNode);
 }

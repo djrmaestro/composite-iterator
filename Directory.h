@@ -86,27 +86,21 @@ class Directory : public Node {
     const_iterator end() const;
     
     Directory(const std::string& dir_name, const std::string& created);
-    
-    virtual void add(Node *pnode) throw(UnsupportedOperationException);
-    
-    virtual void remove(Node *pnode) throw(UnsupportedOperationException)
-    {
-       nodeList.remove(pnode);
-    }
-    
-    // I guess this means immediate children only not grandchildren
-    virtual Node *getChild(int i) throw(UnsupportedOperationException)
-    {
-       // TO DO: Change to work with list:  return nodeList.at(i); 
-        return 0;
-    }
-    
-    virtual std::string getName() const throw(UnsupportedOperationException)
+
+    /*
+     * All these methods are virtual in Node 
+     */
+    virtual void add(Node *pnode) throw(node_logic_error);
+    virtual Node *getChild(int i)  throw(node_logic_error, std::out_of_range);
+      
+    virtual void remove(Node *pnode) throw(node_logic_error, std::invalid_argument);
+  
+    virtual std::string getName() const throw(node_logic_error)
     {
         return name;
     }
     
-    virtual std::string getDateCreated() const throw(UnsupportedOperationException)
+    virtual std::string getDateCreated() const throw(node_logic_error)
     {
         return date_created;
     }
