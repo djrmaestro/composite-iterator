@@ -20,7 +20,7 @@ public:
 
 void Printer::operator()(const Directory *pdir, string path) const
 {
-   ostr << path << "\n";
+   ostr << path << pdir->getName() << "/\n";
 }
 
 void Printer::operator()(const Node *pdir, string path) const
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
         cout << "\n ===== print recursively: top.Recursive(printer) =========== \n" << endl;
         Printer printer(cout);
 
-        top.Recursive(printer);        
+        top.traverse(printer);        
                 
         cout << "\n ===== print using iterator: top.print() =========== \n" << endl;
 
