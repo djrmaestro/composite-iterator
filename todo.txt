@@ -1,2 +1,3 @@
-Directory::print() seems to work correctly. Further test Directory::DoRecursive(F& f, Directory *pdir=0, std::string path="")
-which is a template member function patterned after Directory::print.
+Implement getChild(int) and implement find() using iterators?
+
+Use managed pointers instead of raw Node *. I believe the nodeList should hold shared_ptr and Node method should return a weak_ptr.
