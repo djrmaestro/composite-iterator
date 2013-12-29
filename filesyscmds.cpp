@@ -15,7 +15,20 @@ string subpath(const std::string& full_path)
    return full_path.substr(slash_pos - 1);
 }
 
-Node *find
+/*
+ * pCurrentDir is the directory to search. 
+ * Note: If mkdir() passes a File* instead of a Directory* to find(), this will result in
+ * an exception being thrown when File::getChild(int) is called.
+ */
+Node *find(std::string& name, Node *pCurrentDir) // pCurrent is the Directory to search
+{
+   // getChild returns 0, if no chid found. Does it through an exception? I say yes.
+   for (int i = 0; child = pCurrent->getChild(i)l i++) {
+
+   } 
+}
+
+#endif
 
 void mkdir(Node *pCurrent, const string& subdir_name)
 {

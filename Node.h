@@ -6,6 +6,7 @@
 #include <iosfwd>
 #include <string>
 #include <exception>
+#include <stdexcept>  
 class Directory;
 
 class Node {
@@ -14,49 +15,41 @@ class Node {
   
 public:
     
-    class UnsupportedOperationException : public std::exception {
+    class node_logic_error : public std::logic_error {
         public:  
-           
-       virtual const char* what() const throw()
-       {
-          return "This operation is not supported by the class";
-       }
+       node_logic_error(const std::string& msg) :  std::logic_error(msg) {} 
+             
     };
     
 protected:
     
     static const char directory_separator = '/';
-    
-    virtual void setPath(std::string path)  throw(UnsupportedOperationException)
-    { 
-      throw UnsupportedOperationException();
-    }
-
+      
 public:    
     
-    virtual void add(Node* ele) throw(UnsupportedOperationException)
+    virtual void add(Node* p) throw(node_logic_error)
     { 
-      throw UnsupportedOperationException();
+      throw node_logic_error("This class does not support the add operation");
     }
 
-    virtual void remove(Node *c) throw(UnsupportedOperationException) 
+    virtual void remove(Node *pnode) throw(node_logic_error, std::invalid_argument)
     {
-	throw UnsupportedOperationException();
+	throw node_logic_error("This class does not support the remove operation");
     }
 
-    virtual Node *getChild(int i)  throw(UnsupportedOperationException)
+    virtual Node *getChild(int i)  throw(node_logic_error, std::out_of_range)
     {
-	throw UnsupportedOperationException();
+	throw node_logic_error("This class does not support the getChild operation");
     }
   
-    virtual std::string getName() const  throw(UnsupportedOperationException)
+    virtual std::string getName() const  throw(node_logic_error)
     {
-	throw UnsupportedOperationException();
+	throw node_logic_error("This class does not support the getName operation");
     }
  
-    virtual std::string getDateCreated() const throw(UnsupportedOperationException)
+    virtual std::string getDateCreated() const throw(node_logic_error)
     {
-	throw UnsupportedOperationException();
+	throw node_logic_error("This class does not support the getDateCreated operation");
     }
     
     friend std::ostream& operator<<(std::ostream& ostr, const Node& c); 

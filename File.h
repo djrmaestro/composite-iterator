@@ -17,13 +17,19 @@ class File : public Node {
     File(const std::string& file_name, const std::string& created_date) : name(file_name), date_created(created_date)
     {
     }
+
     
-    virtual std::string getName() const throw(UnsupportedOperationException)
+    virtual std::string getChild(int i) const throw(node_logic_error)
+    {
+        throw node_logic_error("This class does not support getChild");
+    }
+    
+    virtual std::string getName() const throw(node_logic_error)
     {
         return name;
     }
     
-    virtual std::string getDateCreated() const  throw(UnsupportedOperationException)
+    virtual std::string getDateCreated() const  throw(node_logic_error)
     {
         return date_created;
     }
