@@ -11,7 +11,7 @@ string head(const std::string& full_path)
 string subpath(const std::string& full_path)
 {
    int slash_pos = full_path.find('/');
-   if ()
+   if (not the end)
    return full_path.substr(slash_pos - 1);
 }
 
@@ -23,7 +23,7 @@ void mkdir(Node *pCurrent, const string& subdir_name)
 
    if (subpath.empty()) {
 
-        //TODO: add weak_ptr head
+        //TODO: Use weak_ptr for pDir
         Directory *pDir = new Directory(subdir_name);
         pCurrent->add(pDir);
       
