@@ -1,3 +1,17 @@
 Use managed pointers instead of raw Node *. I believe the nodeList should hold shared_ptr and Node method should return a weak_ptr.
 
 Change main.cpp to use mkdir().
+
+use boost::shared_ptr.
+
+=============
+All design patterns:
+
+http://www-st.inf.tu-dresden.de/Lehre/WS04-05/dpf/seminar/panas-pattern-introduction.pdf
+
+Slides (see page 8). Code in java
+http://www.cs.bgu.ac.il/~se082/wiki.files/class-5-Design-Patterns-Vlissides-Designing-with-patterns.pdf
+
+Pattern Hatching slides
+http://www.cs.bgu.ac.il/~se082/wiki.files/class-5-Design-Patterns-Vlissides-Designing-with-patterns.pdf
+

@@ -2,32 +2,11 @@
 #include <string>
 #include "File.h"
 #include "Directory.h"
+#include "CompositePrinter.h"
 #include <iostream>
 
 using namespace std;
 
-class Printer {
-    ostream& ostr;
-    
-public:
-    
-   Printer(ostream& o) : ostr(o) {};
-   
-   void operator()(const Directory *pdir, string path) const;
-   
-   void operator()(const Node *pdir, string path) const;
-};
-
-void Printer::operator()(const Directory *pdir, string path) const
-{
-   ostr << path << pdir->getName() << "/\n";
-}
-
-void Printer::operator()(const Node *pdir, string path) const
-{
-   ostr << path << pdir->getName() << "\n";
-   return;  
-}
 
 int main(int argc, char** argv) 
 {
