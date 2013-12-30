@@ -53,7 +53,7 @@ Directory::Directory(const std::string& dir_name, const std::string& created) : 
 {    
 }
 
-void Directory::add(Node *pNode) throw(node_logic_error)
+void Directory::adopt(Node *pNode) throw(node_logic_error)
 {
     nodeList.push_back(pNode);
 }

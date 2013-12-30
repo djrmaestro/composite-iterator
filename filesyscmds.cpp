@@ -70,7 +70,7 @@ void mkdir(Node *pCurrent, const string& path)
 
         // The time is hardcode for now
         Directory *pDir = new Directory(path, std::string("10/10/2013")); 
-        pCurrent->add(pDir);
+        pCurrent->adopt(pDir);
       
    } else {
 

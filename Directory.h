@@ -90,7 +90,7 @@ class Directory : public Node {
     /*
      * All these methods are virtual in Node 
      */
-    virtual void add(Node *pnode) throw(node_logic_error);
+    virtual void adopt(Node *pnode) throw(node_logic_error);
     virtual Node *getChild(int i)  throw(node_logic_error, std::out_of_range);
       
     virtual void remove(Node *pnode) throw(node_logic_error, std::invalid_argument);

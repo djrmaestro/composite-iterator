@@ -27,7 +27,7 @@ protected:
       
 public:    
     
-    virtual void add(Node* p) throw(node_logic_error)
+    virtual void adopt(Node* p) throw(node_logic_error)
     { 
       throw node_logic_error("This class does not support the add operation");
     }

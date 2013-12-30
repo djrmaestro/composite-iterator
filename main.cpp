@@ -40,8 +40,8 @@ int main(int argc, char** argv)
         
         Directory top(string("top-level-dir"), string("12-09-2013"));
         
-        top.add(ptop_f1);
-        top.add(ptop_f2);
+        top.adopt(ptop_f1);
+        top.adopt(ptop_f2);
         
         Directory *psubdir_mid = new Directory(string("subdir-mid"), string("12-10-2013"));
         
@@ -51,17 +51,17 @@ int main(int argc, char** argv)
         
         File  *psubdir_lower1_f2 = new File(string("subdir-lower1-File2"), string("12-10-2013"));
         
-        psubdir_lower1->add(psubdir_lower1_f1);
-        psubdir_lower1->add(psubdir_lower1_f2);
+        psubdir_lower1->adopt(psubdir_lower1_f1);
+        psubdir_lower1->adopt(psubdir_lower1_f2);
               
-        psubdir_mid->add(psubdir_lower1);
+        psubdir_mid->adopt(psubdir_lower1);
    
         File  *psubdir_mid_f1 = new File(string("subdir_mid-File1"), string("12-12-2013"));
         
         File  *psubdir_mid_f2 = new File(string("subdir-mid_File2"), string("12-10-2013"));
      
-        psubdir_mid->add(psubdir_mid_f1);
-        psubdir_mid->add(psubdir_mid_f2);
+        psubdir_mid->adopt(psubdir_mid_f1);
+        psubdir_mid->adopt(psubdir_mid_f2);
         
         Directory *psubdir_lower2 = new Directory(string("subdir-lower2"), string("12-10-2013"));
         
@@ -69,19 +69,19 @@ int main(int argc, char** argv)
         
         File  *psubdir_lower2_f2 = new File(string("subdir-lower2-File2"), string("12-10-2013"));
         
-        psubdir_lower2->add(psubdir_lower2_f1);
-        psubdir_lower2->add(psubdir_lower2_f2);
+        psubdir_lower2->adopt(psubdir_lower2_f1);
+        psubdir_lower2->adopt(psubdir_lower2_f2);
         
-        psubdir_mid->add(psubdir_lower2);
+        psubdir_mid->adopt(psubdir_lower2);
    
-        top.add(psubdir_mid);
+        top.adopt(psubdir_mid);
         
         File *ptop_f3 = new File(string("top-File3"), string("12-12-2013"));
         
         File *ptop_f4  = new File(string("top-File4"), string("12-10-2013"));
         
-        top.add(ptop_f3);
-        top.add(ptop_f3);
+        top.adopt(ptop_f3);
+        top.adopt(ptop_f3);
         
         cout << "\n ===== print recursively: top.Recursive(printer) =========== \n" << endl;
         Printer printer(cout);
