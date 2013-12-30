@@ -9,11 +9,11 @@ string head(const std::string& path)
 
    if (slash_pos != string::npos) {
 
-       return path.substr(0, slash_pos - 1);
+       return path.substr(0, slash_pos);
 
    } else {
-
-      return path;
+       // return empty string
+      return string(""); 
   }
 }
 
@@ -23,7 +23,7 @@ string subpath(const std::string& path)
 
    if (slash_pos != string::npos) {
 
-       return path.substr(slash_pos - 1);
+       return path.substr(slash_pos + 1);
 
    } else {
 
@@ -33,21 +33,21 @@ string subpath(const std::string& path)
 
 /*
  * pCurrentDir is the directory to search.  
- * Note: If mkdir() passes a File* instead of a Directory* to find(), this will result in
- * a node_logic_exception being thrown when File::getChild(int) is called.
+ * Note: If mkdir() passes a File* as pCurrent instead of a Directory*, this will result in
+ * File::getChild(int) throwing node_logic_error.
  */
-Node *find(std::string& name, Node *pCurrent) // pCurrent is the Directory to search
+Node *find(std::string& name, Node *pCurrent) 
 {
   Node *pChild = 0;
 
-  // getChild returns 0, if no chid found. Does it through an exception? I say yes.
+  // getChild(int) returns 0 if no child found. 
   for (int i = 0; pChild = pCurrent->getChild(i); i++) {
 
        if (name == pChild->getName())  {
 	    break;
        }                   
- 
   } 
+
   return pChild;
 }
 /*
