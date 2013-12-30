@@ -3,20 +3,12 @@
 #include "Directory.h"
 using namespace std;
 
-string head(const std::string& path)
-{
-   int slash_pos = path.find('/');
-
-   if (slash_pos != string::npos) {
-
-       return path.substr(0, slash_pos);
-
-   } else {
-       // return empty string
-      return string(""); 
-  }
-}
-
+/* Evidently,...
+ * When subpath("subdirA/subdirB/newsubDir") is first called, it returns everything after the first '/' or "subDirB/newsubDir"; and head()
+ * returns "subDirA" or everything before the first slash.
+ * When subpath("subdirB/newsubDir") is next called, it returns "newsubDir"; and head() returns "subDirB".
+ * When subpath("newsubDir") is next called, it returns an empty string because there is nothing after the slash.
+ */ 
 string subpath(const std::string& path)
 {
    int slash_pos = path.find('/');
@@ -26,11 +18,24 @@ string subpath(const std::string& path)
        return path.substr(slash_pos + 1);
 
    } else {
-
-       return string(path);
+       // return empty string
+      return string(""); 
    }
 }
 
+string head(const std::string& path)
+{
+   int slash_pos = path.find('/');
+
+   if (slash_pos != string::npos) {
+
+       return path.substr(0, slash_pos);
+
+   } else {
+       // return empty string?
+      return string(""); 
+  }
+}
 /*
  * pCurrentDir is the directory to search.  
  * Note: If mkdir() passes a File* as pCurrent instead of a Directory*, this will result in
@@ -44,6 +49,7 @@ Node *find(std::string& name, Node *pCurrent)
   for (int i = 0; pChild = pCurrent->getChild(i); i++) {
 
        if (name == pChild->getName())  {
+             
 	    break;
        }                   
   } 
@@ -64,7 +70,7 @@ Node *find(std::string& name, Node *pCurrent)
 void mkdir(Node *pCurrent, const string& path)
 {
    
-   string sub_path = subpath(path); // everything but the first name in the path
+   string sub_path = subpath(path); 
 
    if (sub_path.empty()) {
 
@@ -74,7 +80,7 @@ void mkdir(Node *pCurrent, const string& path)
       
    } else {
 
-      string name = head(path); // first name in the path
+      string name = head(path); 
 
       Node *pChild = find(name, pCurrent);
 

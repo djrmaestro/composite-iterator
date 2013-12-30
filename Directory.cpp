@@ -5,25 +5,29 @@
 
 using namespace std;
 
-// TODO: change this to return weak_ptr
 // Return the child, or 0 if not found.
 Node *Directory::getChild(int i) throw(node_logic_error, out_of_range)
 {
     // check if i is in range
     int size = nodeList.size();
 
-    if ( i >= size ) {
+    if ( i >= size || i < 0) {
         
-        throw out_of_range("i must be between 0 and size");
+        throw out_of_range("i out of range");
     }
 
     list<Node *>::iterator iter = nodeList.begin();
+    list<Node *>::iterator iter_end = nodeList.end();
     
     Node *pNode = 0;
     
-    for(int index = 0;  i != index; ++iter, ++index) {
+    for(int index = 0;  iter != iter_end; ++iter, ++index) {
         
            pNode = *iter;    
+           
+           if (i == index){
+               break;
+           }
     }
 
     return pNode;
