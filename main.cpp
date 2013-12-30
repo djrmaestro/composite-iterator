@@ -63,7 +63,7 @@ int main(int argc, char** argv)
         top.adopt(ptop_f3);
         
         cout << "\n ===== print recursively: top.Recursive(printer) =========== \n" << endl;
-        Printer printer(cout);
+        CompositePrinter printer(cout);
 
         top.traverse(printer);        
                 

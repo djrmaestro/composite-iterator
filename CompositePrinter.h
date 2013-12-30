@@ -3,24 +3,24 @@
 #include <string>
 #include <iosfwd>
 
-class Printer {
+class CompositePrinter {
     std::ostream& ostr;
     
 public:
     
-   Printer(std::ostream& o) : ostr(o) {};
+   CompositePrinter(std::ostream& o) : ostr(o) {};
    
    std::ostream& operator()(const Directory *pdir, std::string path) const;
    
    std::ostream& operator()(const Node *pdir, std::string path) const;
 };
 
-inline std::ostream& Printer::operator()(const Directory *pdir, std::string path) const
+inline std::ostream& CompositePrinter::operator()(const Directory *pdir, std::string path) const
 {
    return ostr << path << pdir->getName() << "/\n";
 }
 
-inline std::ostream& Printer::operator()(const Node *pdir, std::string path) const
+inline std::ostream& CompositePrinter::operator()(const Node *pdir, std::string path) const
 {
    return ostr << path << pdir->getName() << "\n";
 }
