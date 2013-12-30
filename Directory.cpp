@@ -13,7 +13,7 @@ Node *Directory::getChild(int i) throw(node_logic_error, out_of_range)
 
     if ( i >= size || i < 0) {
         
-        throw out_of_range("i out of range");
+        throw out_of_range("the index is out of range");
     }
 
     list<Node *>::iterator iter = nodeList.begin();
