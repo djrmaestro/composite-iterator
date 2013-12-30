@@ -1,17 +1,11 @@
-Use managed pointers instead of raw Node *. I believe the nodeList should hold shared_ptr and Node method should return a weak_ptr.
+I am in the process of converting from Node* to shared_ptr<Node *>. I have backed up the old code at ~/temp.
 
-Change main.cpp to use mkdir().
+Once this is done, change main.cpp to use mkdir instead of adopt().
 
-use boost::shared_ptr.
+Use  boost  include path is already correct. It is in /usr/incude/boost. Not sure of the lib path, though.
 
-=============
-All design patterns:
+See this article for Linux: https://forums.netbeans.org/post-145818.html
 
-http://www-st.inf.tu-dresden.de/Lehre/WS04-05/dpf/seminar/panas-pattern-introduction.pdf
+See this article on how to set the boost includ path for Windows using cygwin compiler:
 
-Slides (see page 8). Code in java
-http://www.cs.bgu.ac.il/~se082/wiki.files/class-5-Design-Patterns-Vlissides-Designing-with-patterns.pdf
-
-Pattern Hatching slides
-http://www.cs.bgu.ac.il/~se082/wiki.files/class-5-Design-Patterns-Vlissides-Designing-with-patterns.pdf
-
+http://stackoverflow.com/questions/16254234/boost-in-netbeans-7-1-1
