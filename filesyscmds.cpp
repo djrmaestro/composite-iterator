@@ -67,7 +67,8 @@ Node *find(std::string& name, Node *pCurrent)
  * 3. have subdirB add newsubdir to its children.
  *
  */
-void mkdir(Node *pCurrent, const string& path)
+//--void mkdir(Node *pCurrent, const string& path)
+Directory* mkdir(Node *pCurrent, const string& path)
 {
    
    string sub_path = subpath(path); 
@@ -77,6 +78,7 @@ void mkdir(Node *pCurrent, const string& path)
         // The time is hardcode for now
         Directory *pDir = new Directory(path, std::string("10/10/2013")); 
         pCurrent->adopt(pDir);
+        return pDir;
       
    } else {
 
@@ -86,11 +88,12 @@ void mkdir(Node *pCurrent, const string& path)
 
       if (pChild) {
 
-         mkdir(pChild, sub_path);
-
+         return mkdir(pChild, sub_path);
+         
       } else {
 
          cerr << name << " is  nonexistent." << endl;
+         return 0; 
       }
    }
 }

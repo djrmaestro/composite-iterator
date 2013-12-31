@@ -6,6 +6,7 @@
 std::string head(const std::string& path);
 std::string subpath(const std::string& path);
 Node *find(std::string& name, Node *pCurrent);
-void mkdir(Node *pCurrent, const std::string& subdir_name);
+//--void mkdir(Node *pCurrent, const std::string& subdir_name);
+Directory *mkdir(Node *pCurrent, const std::string& subdir_name);
 
 #endif

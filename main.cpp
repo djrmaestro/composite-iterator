@@ -22,15 +22,17 @@ int main(int argc, char** argv)
         top.adopt(ptop_f1);
         top.adopt(ptop_f2);
         
-        mkdir(&top, "subdir-mid");
-        
-        // get a pointer to the subdirectory we just made.
-        Node *psubdir_mid = top.getChild(2);
-        
-        mkdir(&top, "subdir-mid/subdir-lower1");
+        /* 
+         * We could equivalently do this
+         *      Node *psubdir_mid = top.getChild(2);
+         * to get a pointer to Directory we just created, "subdir-mid" 
+         */  
+        Directory *psubdir_mid = mkdir(&top, "subdir-mid"); 
+           
+        Directory *psubdir_lower1 = mkdir(&top, "subdir-mid/subdir-lower1");
         
         // get a pointer to the subdirectory we just made. It is the first child of subir-mid/
-        Node *psubdir_lower1 = psubdir_mid->getChild(0);
+        //--Node *psubdir_lower1 = psubdir_mid->getChild(0);
 
         File  *psubdir_lower1_f1 = new File(string("subdir-lower1-File1"), string("12-12-2013"));
         
@@ -48,7 +50,13 @@ int main(int argc, char** argv)
 
         mkdir(&top, "subdir-mid/subdir-lower2");
 
-        // The subdirectory subdir-lower2/ is the third child (we index starting at zero) of its immediate parent subdir-mid/
+        /*
+         * For illustration purposes only, we call 
+         *     psubdir_mid->getChild(3)
+         * instead of using the return value of mkdir. Note, the subdirectory subdir-lower2/ is the third child (we index starting
+         * at zero) of its immediate parent subdir-mid/.
+         */   
+        
         Node *psubdir_lower2 = psubdir_mid->getChild(3);
 
         File  *psubdir_lower2_f1 = new File(string("subdir-lower2-File1"), string("12-12-2013"));
