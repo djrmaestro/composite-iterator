@@ -4,14 +4,14 @@
 using namespace std;
 
 /* Evidently,...
- * When subpath("subdirA/subdirB/newsubDir") is first called, it returns everything after the first '/' or "subDirB/newsubDir"; and head()
+ * When subpath("subdirA/subdirB/newsubDir") is first called, it returns everything after the first Node::directory_separator or "subDirB/newsubDir"; and head()
  * returns "subDirA" or everything before the first slash.
  * When subpath("subdirB/newsubDir") is next called, it returns "newsubDir"; and head() returns "subDirB".
  * When subpath("newsubDir") is next called, it returns an empty string because there is nothing after the slash.
  */ 
 string subpath(const std::string& path)
 {
-   int slash_pos = path.find('/');
+   int slash_pos = path.find(Node::directory_separator);
 
    if (slash_pos != string::npos) {
 
@@ -25,7 +25,7 @@ string subpath(const std::string& path)
 
 string head(const std::string& path)
 {
-   int slash_pos = path.find('/');
+   int slash_pos = path.find(Node::directory_separator);
 
    if (slash_pos != string::npos) {
 

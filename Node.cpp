@@ -2,4 +2,4 @@
 #include <string>
 using namespace std;
 
-const string Node::directory_separatory = "/";
+ //const char Node::directory_separatory = '/';

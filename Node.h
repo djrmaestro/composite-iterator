@@ -21,12 +21,9 @@ public:
              
     };
     
-protected:
-    
-    static const char directory_separator = '/';
-      
 public:    
-    
+     static const char directory_separator = '/';
+     
     virtual void adopt(Node* p) throw(node_logic_error)
     { 
       throw node_logic_error("This class does not support the add operation");
