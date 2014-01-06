@@ -97,3 +97,8 @@ Directory* mkdir(Node *pCurrent, const string& path)
       }
    }
 }
+
+void ls(Node *, const std::string& options)
+{
+    // TODO
+}

@@ -48,22 +48,22 @@ inline void Link::remove(Node *pnode) throw(node_logic_error, std::invalid_argum
      return getRealSubject()->remove(pnode);
 }
 
-Node *getChild(int i)  throw(node_logic_error, std::out_of_range)
+inline Node *Link::getChild(int i)  throw(node_logic_error, std::out_of_range)
 {
      return getRealSubject()->getChild(i);
 }
 
-std::string getName() const  throw(node_logic_error)
+inline std::string Link::getName() const  throw(node_logic_error)
 {
      return getRealSubject()->getName();
 }
 
-std::string getDateCreated() const throw(node_logic_error)
+inline std::string Link::getDateCreated() const throw(node_logic_error)
 {
      return getRealSubject()->getDateCreated();
 }    
 
-long getSize() const throw(node_logic_error)
+inline long Link::getSize() const throw(node_logic_error)
 {
      return getRealSubject()->getSize();
 }
