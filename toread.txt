@@ -1,4 +1,7 @@
-See these articles:
+See these slides on Pattern Hatching (in C++) from Ole Miss:
+http://www.cs.olemiss.edu/~hcc/softwareDesign/notes/Designing_with_patterns.ppt
+
+See these articles on custom iterators:
   
 http://squigglybrackets.me/2012/03/12/cpp-stl-custom-iterators/
 
@@ -14,9 +17,3 @@ http://www.stanford.edu/class/cs107l/handouts/04-Custom-Iterators.pdf
 
 Actual code examples:
 https://gist.github.com/jeetsukumaran/307264
-
-On providing a conversion operator to convert from iterator to const_iterator:
-
-http://stackoverflow.com/questions/2844339/c-iterator-and-const-iterator-problem-for-own-container-class
-
-

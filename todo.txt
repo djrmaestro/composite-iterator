@@ -1,10 +1,5 @@
-I am in the process of converting from Node* to shared_ptr<Node *>. I have backed up the old code at ~/temp.
-
-Once this is done, change main.cpp to use mkdir instead of adopt().
-
-Use  boost  include path is already correct. It is in /usr/incude/boost. Not sure of the lib path, though.
-
-See this article for Linux: https://forums.netbeans.org/post-145818.html
+See http://www.cs.olemiss.edu/~hcc/softwareDesign/notes/Designing_with_patterns.ppt
+for excellent pattern hatching slides.
 
 See this article on how to set the boost includ path for Windows using cygwin compiler:
 
