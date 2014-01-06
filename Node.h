@@ -8,8 +8,9 @@
 #include <exception>
 #include <stdexcept>  
 class Directory;
+class Visitor;
 
-class Node {
+class Node { // abstract base class. accept(Visitor&) is pure virtual.
     
   friend class Directory;    
   
@@ -22,7 +23,7 @@ public:
     };
     
 public:    
-     static const char directory_separator = '/';
+    static const char directory_separator = '/';
      
     virtual void adopt(Node* p) throw(node_logic_error)
     { 
@@ -53,7 +54,8 @@ public:
     {
 	throw node_logic_error("This class does not support the getSize operation");
     }
-      
+
+    virtual void accept(Visitor& v) = 0;
     
     friend std::ostream& operator<<(std::ostream& ostr, const Node& c); 
         

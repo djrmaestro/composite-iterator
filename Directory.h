@@ -6,6 +6,7 @@
 #include <string>
 #include <stack>
 #include "Node.h"
+#include "Visitor.h"
 
 class Directory : public Node {
 
@@ -109,6 +110,8 @@ class Directory : public Node {
     }
      
     virtual long getSize() const throw(node_logic_error);
+
+    virtual void accept(Visitor& v);
     
     void print(Directory *pdir=0, std::string path= "") const;
 
@@ -116,6 +119,11 @@ class Directory : public Node {
     
     ~Directory();
 };
+
+inline void Directory::accept(Visitor& v)
+{
+   v.visit(this);
+}
 
 // recursive generic method
 template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir, std::string parent_path)

@@ -2,6 +2,7 @@
 #define  FILE_H_12122013
 #include <string>
 #include "Node.h"
+#include "Visitor.h"
 
 class Directory;
 
@@ -34,8 +35,10 @@ class File : public Node {
         return file_size;
     }
 
+    virtual void accept(Visitor &v)
+    {
+         v.visit(this);
+    }
 
-    // Called by Node::operator<<(ostream&)
-    //--virtual void print(std::ostream& ostr) const;
 };
 #endif
