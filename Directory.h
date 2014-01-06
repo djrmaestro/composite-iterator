@@ -126,7 +126,7 @@ inline void Directory::accept(Visitor& v)
 }
 
 // recursive generic method
-template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir, std::string parent_path)
+template<typename F> void Directory::DoRecursive(F& Functor, const Directory *pdir, std::string parent_path)
 {
 /*
     std::list<Node *>::iterator list_iter = const_cast<Directory *>(pdir)->nodeList.begin();
@@ -137,7 +137,7 @@ template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir,
     
     std::string dir_name = pdir->getName();
                 
-    func(pdir, parent_path);     
+    Functor(pdir, parent_path);     
     
     parent_path += dir_name + "/";
 
@@ -148,11 +148,11 @@ template<typename F> void Directory::DoRecursive(F& func, const Directory *pdir,
          if (dynamic_cast<const Directory *>(pNode)) {
 
                const Directory *p = static_cast<const Directory *>(pNode);
-               DoRecursive(func, p, parent_path);
+               DoRecursive(Functor, p, parent_path);
                               
          } else { 
              
-            func(pNode, parent_path);
+            Functor(pNode, parent_path);
          }   
     }
 }
