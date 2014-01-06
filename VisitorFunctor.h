@@ -1,3 +1,5 @@
+#ifndef VisitorFunctor_h_2973294723
+#define VisitorFunctor_h_2973294723
 class VistorFunctor {
 
    Visitor &visitor;
@@ -11,3 +13,4 @@ public:
      return node.accept(visitor);
   }
 };
+#endif
