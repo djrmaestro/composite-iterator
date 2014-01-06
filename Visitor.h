@@ -9,6 +9,8 @@ class Directory;
 class Visitor {
 
    public:
+       Visitor() {}
+       Visitor(const Visitor& ) {}
     virtual void visit(File *) = 0;
     virtual void visit(Directory *) = 0;
 };
