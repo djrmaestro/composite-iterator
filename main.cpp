@@ -10,12 +10,12 @@ using namespace std;
 
 int main(int argc, char** argv) 
 {
-       
+    long file_size = 1000;   
     try {
         
-        File *ptop_f1 = new File(string("top-File1"), string("12-12-2013"));
+        File *ptop_f1 = new File(string("top-File1"), string("12-12-2013"), file_size);
         
-        File *ptop_f2  = new File(string("top-File2"), string("12-10-2013"));
+        File *ptop_f2  = new File(string("top-File2"), string("12-10-2013"), file_size);
         
         Directory top(string("top-level-dir"), string("12-09-2013"));
         
@@ -34,16 +34,16 @@ int main(int argc, char** argv)
         // get a pointer to the subdirectory we just made. It is the first child of subir-mid/
         //--Node *psubdir_lower1 = psubdir_mid->getChild(0);
 
-        File  *psubdir_lower1_f1 = new File(string("subdir-lower1-File1"), string("12-12-2013"));
+        File  *psubdir_lower1_f1 = new File(string("subdir-lower1-File1"), string("12-12-2013"), file_size);
         
-        File  *psubdir_lower1_f2 = new File(string("subdir-lower1-File2"), string("12-10-2013"));
+        File  *psubdir_lower1_f2 = new File(string("subdir-lower1-File2"), string("12-10-2013"), file_size);
         
         psubdir_lower1->adopt(psubdir_lower1_f1);
         psubdir_lower1->adopt(psubdir_lower1_f2);
         
-        File  *psubdir_mid_f1 = new File(string("subdir_mid-File1"), string("12-12-2013"));
+        File  *psubdir_mid_f1 = new File(string("subdir_mid-File1"), string("12-12-2013"), file_size);
     
-        File  *psubdir_mid_f2 = new File(string("subdir-mid_File2"), string("12-10-2013"));
+        File  *psubdir_mid_f2 = new File(string("subdir-mid_File2"), string("12-10-2013"), file_size);
      
         psubdir_mid->adopt(psubdir_mid_f1);
         psubdir_mid->adopt(psubdir_mid_f2);
@@ -59,16 +59,16 @@ int main(int argc, char** argv)
         
         Node *psubdir_lower2 = psubdir_mid->getChild(3);
 
-        File  *psubdir_lower2_f1 = new File(string("subdir-lower2-File1"), string("12-12-2013"));
+        File  *psubdir_lower2_f1 = new File(string("subdir-lower2-File1"), string("12-12-2013"), file_size);
         
-        File  *psubdir_lower2_f2 = new File(string("subdir-lower2-File2"), string("12-10-2013"));
+        File  *psubdir_lower2_f2 = new File(string("subdir-lower2-File2"), string("12-10-2013"), file_size);
         
         psubdir_lower2->adopt(psubdir_lower2_f1);
         psubdir_lower2->adopt(psubdir_lower2_f2);
               
-        File *ptop_f3 = new File(string("top-File3"), string("12-12-2013"));
+        File *ptop_f3 = new File(string("top-File3"), string("12-12-2013"), file_size);
         
-        File *ptop_f4  = new File(string("top-File4"), string("12-10-2013"));
+        File *ptop_f4  = new File(string("top-File4"), string("12-10-2013"), file_size);
         
         top.adopt(ptop_f3);
         top.adopt(ptop_f4);

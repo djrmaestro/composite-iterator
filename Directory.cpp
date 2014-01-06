@@ -33,6 +33,29 @@ Node *Directory::getChild(int i) throw(node_logic_error, out_of_range)
     return pNode;
 }
 /*
+ * getSize() is defined recursively.
+ */
+long Directory::getSize() const throw(node_logic_error)
+{ 
+    long total = 0;
+
+    int size = nodeList.size();
+
+    //--list<Node *>::iterator iter = nodeList.begin();
+    //--list<Node *>::iterator iter_end = nodeList.end();
+    list<Node *>::const_iterator iter = nodeList.begin();
+    list<Node *>::const_iterator iter_end = nodeList.end();
+    
+    for(; iter != iter_end; ++iter) {
+        
+           const Node *child = *iter;    
+           total += child->getSize(); 
+    }
+
+    return total;
+}
+
+/*
  * 
  */
 void Directory::remove(Node *pNode) throw(node_logic_error, invalid_argument)

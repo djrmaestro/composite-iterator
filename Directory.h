@@ -33,7 +33,7 @@ class Directory : public Node {
         public:
                 
           explicit DirectoryIterator(Directory & dir); 
-
+        
           // Required forward iterator methods follow
           DirectoryIterator();                          
           DirectoryIterator(const DirectoryIterator&);
@@ -46,7 +46,7 @@ class Directory : public Node {
           Node *operator->() const; 
           DirectoryIterator& operator++();
           DirectoryIterator operator++(int);
-         
+                   
           bool operator==(const DirectoryIterator& x) const;
           bool operator!=(const DirectoryIterator& x) const;
      };
@@ -60,6 +60,9 @@ class Directory : public Node {
         public:
                 
           explicit ConstDirectoryIterator(const Directory & dir); 
+          
+          // This ctor will function as a cast operator, to convert a DirectoryIterator into a ConstDirectoryIterator
+          ConstDirectoryIterator(const DirectoryIterator &iter); 
           
           // Required forward iterator methods follow
           ConstDirectoryIterator();                          
@@ -104,6 +107,8 @@ class Directory : public Node {
     {
         return date_created;
     }
+     
+    virtual long getSize() const throw(node_logic_error);
     
     void print(Directory *pdir=0, std::string path= "") const;
 
@@ -182,6 +187,10 @@ inline Directory::ConstDirectoryIterator::ConstDirectoryIterator() : inner_iter(
 }
 
 inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const ConstDirectoryIterator& citer) : inner_iter(citer.inner_iter) 
+{
+}
+
+inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const DirectoryIterator& iter) : inner_iter(iter) 
 {
 }
 

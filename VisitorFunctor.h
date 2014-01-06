@@ -1,5 +1,7 @@
 class VistorFunctor {
+
    Visitor &visitor;
+
 public:
 
   VisitorFunctor(Visitor& v) : visitor(v) {}

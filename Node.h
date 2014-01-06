@@ -47,7 +47,13 @@ public:
     virtual std::string getDateCreated() const throw(node_logic_error)
     {
 	throw node_logic_error("This class does not support the getDateCreated operation");
+    }    
+  
+    virtual long getSize() const throw(node_logic_error)
+    {
+	throw node_logic_error("This class does not support the getSize operation");
     }
+      
     
     friend std::ostream& operator<<(std::ostream& ostr, const Node& c); 
         

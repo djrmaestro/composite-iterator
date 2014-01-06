@@ -9,12 +9,13 @@ class File : public Node {
 
     std::string name;
     std::string date_created;
+    int file_size; 
 
     File(const File&); // can't have duplicate files
 
     public:   
   
-    File(const std::string& file_name, const std::string& created_date) : name(file_name), date_created(created_date)
+    File(const std::string& file_name, const std::string& created_date, int size) : name(file_name), date_created(created_date), file_size(size)
     {
     }
     
@@ -27,6 +28,12 @@ class File : public Node {
     {
         return date_created;
     }
+
+    virtual long getSize() const  throw(node_logic_error)
+    {
+        return file_size;
+    }
+
 
     // Called by Node::operator<<(ostream&)
     //--virtual void print(std::ostream& ostr) const;
