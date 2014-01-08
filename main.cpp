@@ -32,8 +32,7 @@ int main(int argc, char** argv)
            
         Directory *psubdir_lower1 = mkdir(&top, "subdir-mid/subdir-lower1");
         
-        // get a pointer to the subdirectory we just made. It is the first child of subir-mid/
-        //--Node *psubdir_lower1 = psubdir_mid->getChild(0);
+        // Node *psubdir_lower1 = psubdir_mid->getChild(0); 
 
         File  *psubdir_lower1_f1 = new File(string("subdir-lower1-File1"), string("12-12-2013"), file_size);
         
@@ -84,7 +83,7 @@ int main(int argc, char** argv)
 
         top.print(); 
         
-        cout << "\n ====== using external iterators to print ==== \n" << endl;
+        cout << "\n ====== using external iterators to print. Also using SuffixPrintVisitor ==== \n" << endl;
         
         Directory::iterator iter_current = top.begin();
         Directory::iterator iter_end = top.end();
@@ -99,7 +98,7 @@ int main(int argc, char** argv)
               cout << endl;
         }
         
-        cout << "\n ===== Testing Directory::const_iterator ======\n";
+        cout << "\n ===== Testing Directory::const_iterator. Also using SuffixPrintVisitor  ======\n";
         
         const Directory& const_top = top;
         
