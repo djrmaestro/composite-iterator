@@ -25,10 +25,11 @@ class Directory : public Node {
      class DirectoryIterator : public std::iterator<std::forward_iterator_tag, Node *> { 
    
           friend class Directory;
+          typedef  std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator>  iterators_pair;         
           
-          std::stack< std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator> >  iters_stack;
+          std::stack< iterators_pair >  iters_stack;
           
-          Node *pCurrentNode;         
+          Node *pCurrentNode;            
           Directory *pDirectory;  // This is the top level directory which will be iterated.
                   
         public:
