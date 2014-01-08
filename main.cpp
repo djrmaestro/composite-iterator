@@ -4,6 +4,7 @@
 #include "Directory.h"
 #include "CompositePrinter.h"
 #include "filesyscmds.h"
+#include "SuffixPrintVisitor.h"
 #include <iostream>
 
 using namespace std;
@@ -87,26 +88,18 @@ int main(int argc, char** argv)
         
         Directory::iterator iter_current = top.begin();
         Directory::iterator iter_end = top.end();
+        
+        SuffixPrintVisitor spv;
 
         for (;iter_current != iter_end; ++iter_current) {
             
-              Node &node = *iter_current;
-                                        
-              cout <<  "[address: " << hex << &node << "] " << node.getName(); 
-              
-              if (dynamic_cast<Directory*>(&node) ) {
-                  
-                 cout << " is a Directory ";
-                  
-              } else {
-                  
-                  cout << " is a File ";
-              }
+              cout <<  iter_current->getName(); 
+              iter_current->accept(spv); 
               
               cout << endl;
         }
         
-        cout << "\n ===== Testing Directory::const_iterator ===:==\n";
+        cout << "\n ===== Testing Directory::const_iterator ======\n";
         
         const Directory& const_top = top;
         
@@ -114,19 +107,9 @@ int main(int argc, char** argv)
         Directory::const_iterator const_iter_end = const_top.end();
 
         for (;const_iter_current != const_iter_end; ++const_iter_current) {
-            
-              const Node &node = *const_iter_current;
-                                        
-              cout <<  "[address: " << hex << &node << "] " << node.getName(); 
               
-              if (dynamic_cast<const Directory*>(&node) ) {
-                  
-                 cout << " is a Directory ";
-                  
-              } else {
-                  
-                  cout << " is a File ";
-              }
+              cout <<  iter_current->getName(); 
+              iter_current->accept(spv); 
               
               cout << endl;
         }

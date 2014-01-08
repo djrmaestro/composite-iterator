@@ -11,7 +11,7 @@ class Visitor {
    public:
        Visitor() {}
        Visitor(const Visitor& ) {}
-    virtual void visit(File *) = 0;
-    virtual void visit(Directory *) = 0;
+    virtual void visit(const File *) = 0;
+    virtual void visit(const Directory *) = 0;
 };
 #endif

@@ -9,14 +9,18 @@ class Directory;
 class SuffixPrintVisitor : public Visitor {
 
  public:
-    virtual void visit(File *pFile)
-    {
-        std::cout << '@';
-    }
+    void visit(const File *pFile);
+    void visit(const Directory *pDir);
     
-    virtual void visit(Directory *pDir)
-    {
-        std::cout << "/";
-    }
 };
+
+inline void SuffixPrintVisitor::visit(const File *pFile)
+{
+    std::cout << '@';
+}
+
+inline void SuffixPrintVisitor::visit(const Directory *pDir)
+{
+    std::cout << "/";
+}
 #endif
