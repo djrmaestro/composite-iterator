@@ -21,7 +21,7 @@ class Directory : public Node {
 
   public:
 
-     // nested iterator classes
+     // nested stl-compliant forward iterator classes. They iterate the entire Directoy tree structure in order.
      class DirectoryIterator : public std::iterator<std::forward_iterator_tag, Node *> { 
    
           friend class Directory;
@@ -29,7 +29,7 @@ class Directory : public Node {
           
           std::stack< iterators_pair >  iters_stack;
           
-          Node *pCurrentNode;            
+          Node *pCurrentNode;   // TODO: Change to iterators_pair& ?         
           Directory *pDirectory;  // This is the top level directory which will be iterated.
                   
         public:
@@ -53,12 +53,11 @@ class Directory : public Node {
           bool operator!=(const DirectoryIterator& x) const;
      };
 
-     // nested iterator class
      class ConstDirectoryIterator : public std::iterator<std::forward_iterator_tag, const Node *> { 
 
           friend class Directory;
 
-           DirectoryIterator inner_iter; // fwd operations here, using "const_cast<Directory *>(this)->method()"            
+           DirectoryIterator inner_iter; 
         public:
                 
           explicit ConstDirectoryIterator(const Directory & dir); 
@@ -91,34 +90,35 @@ class Directory : public Node {
     const_iterator end() const;
     
     Directory(const std::string& dir_name, const std::string& created);
-
-    /*
-     * All these methods are virtual in Node 
-     */
-    virtual void adopt(Node *pnode) throw(node_logic_error);
-    virtual Node *getChild(int i)  throw(node_logic_error, std::out_of_range);
-      
-    virtual void remove(Node *pnode) throw(node_logic_error, std::invalid_argument);
-  
-    virtual std::string getName() const throw(node_logic_error)
-    {
-        return name;
-    }
-    
-    virtual std::string getDateCreated() const throw(node_logic_error)
-    {
-        return date_created;
-    }
-     
-    virtual long getSize() const throw(node_logic_error);
-
-    virtual void accept(Visitor& v);
     
     void print(Directory *pdir=0, std::string path= "") const;
 
     template<typename F> void traverse(F& f);
+
+    /*
+     * All these methods are virtual in Node 
+     */
+    void adopt(Node *pnode) throw(node_logic_error);
+    Node *getChild(int i)  throw(node_logic_error, std::out_of_range);
     
+    void remove(Node *pnode) throw(node_logic_error, std::invalid_argument);
+  
+    std::string getName() const throw(node_logic_error)
+    {
+        return name;
+    }
+    
+    std::string getDateCreated() const throw(node_logic_error)
+    {
+        return date_created;
+    }
+     
+    long getSize() const throw(node_logic_error);
+
+    void accept(Visitor& v);
+
     ~Directory();
+    
 };
 
 inline void Directory::accept(Visitor& v)
@@ -129,10 +129,6 @@ inline void Directory::accept(Visitor& v)
 // recursive generic method
 template<typename F> void Directory::DoRecursive(F& Functor, const Directory *pdir, std::string parent_path)
 {
-/*
-    std::list<Node *>::iterator list_iter = const_cast<Directory *>(pdir)->nodeList.begin();
-    std::list<Node *>::iterator end_iter  = const_cast<Directory *>(pdir)->nodeList.end();
-*/
     std::list<Node *>::const_iterator list_iter = pdir->nodeList.begin();
     std::list<Node *>::const_iterator end_iter  = pdir->nodeList.end();
     
@@ -157,6 +153,7 @@ template<typename F> void Directory::DoRecursive(F& Functor, const Directory *pd
          }   
     }
 }
+
 template<typename F> void Directory::traverse(F& f)
 {
    this->DoRecursive(f, this, std::string("")); 
@@ -205,8 +202,8 @@ inline Directory::ConstDirectoryIterator::ConstDirectoryIterator(const Directory
 
 inline  Directory::ConstDirectoryIterator& Directory::ConstDirectoryIterator::operator++()
 {
-  ++inner_iter;
-  return *this;
+   ++inner_iter;
+   return *this;
 }
 
 inline const Node &Directory::ConstDirectoryIterator::operator*() const

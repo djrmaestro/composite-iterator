@@ -1,5 +1,5 @@
-See http://www.cs.olemiss.edu/~hcc/softwareDesign/notes/Designing_with_patterns.ppt
-for excellent pattern hatching slides.
+For excellent Pattern Hatching slides see: 
+http://www.cs.olemiss.edu/~hcc/softwareDesign/notes/Designing_with_patterns.ppt
 
 See this article on how to set the boost includ path for Windows using cygwin compiler:
 
