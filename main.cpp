@@ -75,17 +75,17 @@ int main(int argc, char** argv)
         top.adopt(ptop_f3);
         top.adopt(ptop_f4);
         
-        cout << "\n ===== top.traverse(CompositePrint(cout))  =========== \n" << endl;
+        cout << "\n ===== top.traverse(CompositePrinter(cout))  =========== \n" << endl;
          
         CompositePrinter printer(cout);
 
         top.traverse(printer);        
                 
-        cout << "\n ===== print using iterator: top.print() =========== \n" << endl;
+        cout << "\n ===== top.print() =========== \n" << endl;
 
         top.print(); 
         
-        cout << "\n ====== using Directory::iterator external iterator to print. SuffixPrintVisitor used to append Node type. ==== \n" << endl;
+        cout << "\n ====== using external iterator Directory::iterator to loop over composite print to stdou and SuffixPrintVisitor to append Node type. ==== \n" << endl;
         
         Directory::iterator iter_current = top.begin();
         Directory::iterator iter_end = top.end();
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
               cout << endl;
         }
                 
-        cout << "\n ===== Testing Directory::const_iterator. Also using SuffixPrintVisitor  ======\n";
+        cout << "\n ===== using external iterator Directory::const_iterator. Also using SuffixPrintVisitor  ======\n";
         
         const Directory& const_top = top;
         
