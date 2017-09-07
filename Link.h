@@ -7,10 +7,10 @@ class Link : public Node {
    private:
       Node *pSubject;
       Node *operator->();
+      Node *getSubject() const;
 
    public:
       Link(const std::string& name, Node *p);
-      Node *getRealSubject() const;
       
     // fwd all other operations to pSubject
 
@@ -28,48 +28,48 @@ class Link : public Node {
 
 inline Link::Link(const std::string& name, Node *p) : pSubject(p) {}
 
-inline Node* Link::getRealSubject() const
+inline Node* Link::getSubject() const
 { 
   return pSubject; 
 }
 
 inline Node *Link::operator->() 
 { 
-  return getRealSubject(); 
+  return getSubject(); 
 }
 
 inline void Link::adopt(Node* p) throw(node_logic_error)
 {
-    return getRealSubject()->adopt(p); 
+    return getSubject()->adopt(p); 
 }
 
 inline void Link::remove(Node *pnode) throw(node_logic_error, std::invalid_argument)
 {
-     return getRealSubject()->remove(pnode);
+     return getSubject()->remove(pnode);
 }
 
 inline Node *Link::getChild(int i)  throw(node_logic_error, std::out_of_range)
 {
-     return getRealSubject()->getChild(i);
+     return getSubject()->getChild(i);
 }
 
 inline std::string Link::getName() const  throw(node_logic_error)
 {
-     return getRealSubject()->getName();
+     return getSubject()->getName();
 }
 
 inline std::string Link::getDateCreated() const throw(node_logic_error)
 {
-     return getRealSubject()->getDateCreated();
+     return getSubject()->getDateCreated();
 }    
 
 inline long Link::getSize() const throw(node_logic_error)
 {
-     return getRealSubject()->getSize();
+     return getSubject()->getSize();
 }
 
 inline void Link::accept(Visitor& v)
 {
-    return getRealSubject()->accept(v);
+    return getSubject()->accept(v);
 }
 #endif
