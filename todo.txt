@@ -1,6 +1,9 @@
-For excellent Pattern Hatching slides see: 
-http://www.cs.olemiss.edu/~hcc/softwareDesign/notes/Designing_with_patterns.ppt
+Does 'adopt()' mean 'take ownership of'?
 
-See this article on how to set the boost includ path for Windows using cygwin compiler:
+Guideline:
+Only pass reference counted pointers when you want to particiapte in managing the pointer.
 
-http://stackoverflow.com/questions/16254234/boost-in-netbeans-7-1-1
+Use a 'shared_ptr&' parameter only to modify the shared_ptr. Use a 'const shared_ptr&' as a parameter only if you’re not sure whether or not you’ll take a copy and share ownership; otherwise, use widget* instead 
+(or if not nullable, a widget&).
+
+For excellent Pattern Hatching slides see: http://www.cs.olemiss.edu/~hcc/softwareDesign/notes/Designing_with_patterns.ppt
