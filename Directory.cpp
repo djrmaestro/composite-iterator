@@ -41,8 +41,6 @@ long Directory::getSize() const throw(node_logic_error)
 
     int size = nodeList.size();
 
-    //--list<Node *>::iterator iter = nodeList.begin();
-    //--list<Node *>::iterator iter_end = nodeList.end();
     list<Node *>::const_iterator iter = nodeList.begin();
     list<Node *>::const_iterator iter_end = nodeList.end();
     
@@ -95,7 +93,9 @@ Directory::const_iterator Directory::end() const
     return ConstDirectoryIterator(); 
 }
  
-/*
+/* 
+ * Prior code before the iterator nested class was created that incorporates this logic
+ *
 bool Directory::DirectoryIterator::hasNext()
 {
    if (iters_stack.empty()) {

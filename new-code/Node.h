@@ -17,15 +17,7 @@ class Node { // abstract base class. accept(Visitor&) is pure virtual.
     
   friend class Directory;    
   
-  public:
-    
-        class node_logic_error : public std::logic_error {
-            public:  
-           node_logic_error(const std::string& msg) :  std::logic_error(msg) {} 
-                 
-        };
-    
-  public:            
+ public:            
 
     Node() {};
 
@@ -33,34 +25,34 @@ class Node { // abstract base class. accept(Visitor&) is pure virtual.
 
     static const char directory_separator = '/';
      
-    virtual void adopt(Node* p) 
+    virtual void adopt(const shared_ptr<Node>& ptr) 
     { 
-      throw node_logic_error("This class does not support the add operation");
+      throw logic_error("This class does not support the add operation");
     }
 
     virtual void remove(Node *pnode) 
     {
-	throw node_logic_error("This class does not support the remove operation");
+	throw logic_error("This class does not support the remove operation");
     }
 
     virtual Node *getChild(int i) 
     {
-	throw node_logic_error("This class does not support the getChild operation");
+	throw logic_error("This class does not support the getChild operation");
     }
   
     virtual std::string getName() const
     {
-	throw node_logic_error("This class does not support the getName operation");
+	throw logic_error("This class does not support the getName operation");
     }
  
     virtual std::string getDateCreated() const
     {
-	throw node_logic_error("This class does not support the getDateCreated operation");
+	throw logic_error("This class does not support the getDateCreated operation");
     }    
   
     virtual long getSize() const
     {
-	throw node_logic_error("This class does not support the getSize operation");
+	throw logic_error("This class does not support the getSize operation");
     }
 
     virtual void accept(Visitor& v) const = 0; 

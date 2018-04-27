@@ -105,7 +105,7 @@ class Directory : public Node {
     /*
      * All these methods are virtual in Node 
      */
-    void adopt(Node *pnode);
+    void adopt(const std::shared<Node>& ptr);
 
     Node *getChild(int i);
     
