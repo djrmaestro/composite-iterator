@@ -22,10 +22,10 @@ class Directory : public Node {
   public:
 
      // nested stl-compliant forward iterator classes. They iterate the entire Directoy tree structure in order.
-     class DirectoryIterator : public std::iterator<std::forward_iterator_tag, Node *> { 
+     class DirectoryIterator {
    
           friend class Directory;
-          typedef  std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator>  iterators_pair;         
+          using iterator_pair = std::pair< std::list<Node *>::iterator, std::list<Node *>::iterator>;         
           
           std::stack< iterators_pair >  iters_stack;
           
@@ -33,7 +33,12 @@ class Directory : public Node {
           Directory *pDirectory;  // This is the top level directory which will be iterated.
                   
         public:
-                
+          
+          using value_type = Node *;
+          using reference = value_type;
+          using pointer = value_type*;
+          using iterator_category = std::forward_iterator_tag;
+      
           explicit DirectoryIterator(Directory & dir); 
         
           // Required forward iterator methods follow
