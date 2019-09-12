@@ -65,13 +65,19 @@ class Directory : public Node {
           bool operator!=(const DirectoryIterator& x) const;
      };
 
-     class ConstDirectoryIterator : public std::iterator<std::forward_iterator_tag, const Node *> { 
+     class ConstDirectoryIterator { 
 
           friend class Directory;
 
            DirectoryIterator inner_iter; 
         public:
-                
+       
+          using value_type = const Node *;
+          using reference = const value_type&;
+          using pointer = const value_type*;
+          using iterator_category = std::forward_iterator_tag;
+      
+            
           explicit ConstDirectoryIterator(const Directory & dir); 
           
           // This ctor will function as a cast operator, to convert a DirectoryIterator into a ConstDirectoryIterator
